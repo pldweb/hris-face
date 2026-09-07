@@ -31,6 +31,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/cuti',
+      name: 'leave',
+      component: () => import('../views/LeaveRequest.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/admin',
       component: () => import('../views/admin/AdminLayout.vue'),
       meta: { requiresAuth: true, roles: ['hr', 'superadmin'] },
@@ -40,6 +46,7 @@ const router = createRouter({
         { path: 'face-scan', name: 'admin-face-scan', component: () => import('../views/admin/FaceScan.vue') },
         { path: 'employees', name: 'admin-employees', component: () => import('../views/admin/EmployeeList.vue') },
         { path: 'corrections', name: 'admin-corrections', component: () => import('../views/admin/Corrections.vue') },
+        { path: 'leave-requests', name: 'admin-leave-requests', component: () => import('../views/admin/LeaveRequests.vue') },
         { path: 'master', name: 'admin-master', component: () => import('../views/admin/MasterData.vue') },
       ],
     },

@@ -8,6 +8,7 @@ import {
   CustomerServiceOutlined,
   DashboardOutlined,
   DownOutlined,
+  FileTextOutlined,
   LogoutOutlined,
   ScanOutlined,
   SettingOutlined,
@@ -22,7 +23,7 @@ const router = useRouter()
 const auth = useAuthStore()
 
 const selectedKeys = computed(() => [route.path])
-const pageTitle = computed(() => route.path.includes('face-scan') ? 'Scan Wajah' : route.path.includes('employees') ? 'Karyawan' : route.path.includes('corrections') ? 'Koreksi Absen' : route.path.includes('master') ? 'Master Data' : 'Monitoring')
+const pageTitle = computed(() => route.path.includes('face-scan') ? 'Scan Wajah' : route.path.includes('employees') ? 'Karyawan' : route.path.includes('corrections') ? 'Koreksi Absen' : route.path.includes('leave-requests') ? 'Cuti & Izin' : route.path.includes('master') ? 'Master Data' : 'Monitoring')
 const initials = computed(() => (auth.fullName ?? 'Admin').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase())
 
 async function onLogout() {
@@ -48,6 +49,9 @@ async function onLogout() {
         </a-menu-item>
         <a-menu-item key="/admin/corrections">
           <AuditOutlined /><router-link to="/admin/corrections">Koreksi Absen</router-link>
+        </a-menu-item>
+        <a-menu-item key="/admin/leave-requests">
+          <FileTextOutlined /><router-link to="/admin/leave-requests">Cuti & Izin</router-link>
         </a-menu-item>
         <a-menu-item key="/admin/master">
           <SettingOutlined /><router-link to="/admin/master">Master Data</router-link>

@@ -18,6 +18,7 @@ import (
 	"github.com/hris-face/api/internal/employee"
 	"github.com/hris-face/api/internal/enrollment"
 	"github.com/hris-face/api/internal/faceclient"
+	"github.com/hris-face/api/internal/leave"
 	"github.com/hris-face/api/internal/masterdata"
 	"github.com/hris-face/api/internal/middleware"
 	"github.com/hris-face/api/internal/notify"
@@ -47,6 +48,7 @@ func main() {
 	mailer := notify.New(cfg.SMTP)
 	reportSvc := report.NewService(pool, cfg.Timezone)
 	correctionSvc := correction.NewService(pool, mailer)
+	leaveSvc := leave.NewService(pool, mailer)
 	masterSvc := masterdata.NewService(pool)
 
 	if cfg.Env == "production" {
@@ -77,6 +79,7 @@ func main() {
 	employee.RegisterRoutes(protected, empSvc)
 	report.RegisterRoutes(protected, reportSvc)
 	correction.RegisterRoutes(protected, correctionSvc)
+	leave.RegisterRoutes(protected, leaveSvc)
 	masterdata.RegisterRoutes(protected, masterSvc)
 	enrollment.RegisterRoutes(protected, enrollSvc)
 

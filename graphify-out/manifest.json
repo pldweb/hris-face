@@ -1,12 +1,7 @@
 {
-  ".codex/hooks.json": {
-    "mtime": 1788789858.5082452,
-    "ast_hash": "b57932dbe926cce840fc22a712927bd8",
-    "semantic_hash": "b57932dbe926cce840fc22a712927bd8"
-  },
   "api/cmd/api/main.go": {
-    "mtime": 1788803341.5282485,
-    "ast_hash": "c191c9ca000e298ea1cdbff864c18e10",
+    "mtime": 1788807057.83788,
+    "ast_hash": "b557a6486b8c34264e8d1b8ce88c9ea5",
     "semantic_hash": ""
   },
   "api/cmd/seed/main.go": {
@@ -180,8 +175,8 @@
     "semantic_hash": ""
   },
   "api/internal/report/service.go": {
-    "mtime": 1788804829.5572734,
-    "ast_hash": "742a7dfd0d9d815c250ffcf8930a1a72",
+    "mtime": 1788807086.2031696,
+    "ast_hash": "ed29d1769c2d74a590ef6939443adea7",
     "semantic_hash": ""
   },
   "deploy/deploy.sh": {
@@ -325,8 +320,8 @@
     "semantic_hash": "787e8f7b13a6898b9b33e7ea5a5c0d69"
   },
   "web/src/router/index.ts": {
-    "mtime": 1788790119.0991163,
-    "ast_hash": "d15b05a9b55904328e668fb656f7a02e",
+    "mtime": 1788807471.0915542,
+    "ast_hash": "6f48ed68da6757e220c1018e44811387",
     "semantic_hash": ""
   },
   "web/src/stores/auth.ts": {
@@ -365,8 +360,8 @@
     "semantic_hash": ""
   },
   "web/src/views/admin/AdminLayout.vue": {
-    "mtime": 1788804893.0865538,
-    "ast_hash": "583f3f4af6193f9cd024bfa912c5796b",
+    "mtime": 1788807560.4106996,
+    "ast_hash": "229cc1e36207b3c3c38079fe3585babb",
     "semantic_hash": ""
   },
   "web/src/views/admin/Corrections.vue": {
@@ -425,8 +420,8 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1788789858.5075748,
-    "ast_hash": "6a47d64fcc136324ca395065a707ef76",
+    "mtime": 1788806495.9453075,
+    "ast_hash": "a0ca73fa4253de7cd88c41a476f97aae",
     "semantic_hash": ""
   },
   "PRODUCT.md": {
@@ -495,8 +490,133 @@
     "semantic_hash": ""
   },
   "web/src/views/EmployeeNav.vue": {
-    "mtime": 1788806123.2764308,
-    "ast_hash": "9e1f99cdde00bb1d767ea107b86dbf14",
+    "mtime": 1788807511.421207,
+    "ast_hash": "56b4c76eb9dfbc339a541eaf8a0768ef",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-human/contrast-check.py": {
+    "mtime": 1788806450.129446,
+    "ast_hash": "a5377569103bf07a18670b12bba66911",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-human/contrast-mcp.py": {
+    "mtime": 1788806450.129446,
+    "ast_hash": "3e9d9995dac9456c0f71939ba9bedee1",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-human/contrast-check.py": {
+    "mtime": 1788806450.0818527,
+    "ast_hash": "a5377569103bf07a18670b12bba66911",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-human/contrast-mcp.py": {
+    "mtime": 1788806450.0818775,
+    "ast_hash": "3e9d9995dac9456c0f71939ba9bedee1",
+    "semantic_hash": ""
+  },
+  "api/internal/db/migrations/0004_leave_requests.down.sql": {
+    "mtime": 1788806985.7578793,
+    "ast_hash": "df0ac3cccb1f96ad657e8b650e7bca01",
+    "semantic_hash": ""
+  },
+  "api/internal/db/migrations/0004_leave_requests.up.sql": {
+    "mtime": 1788806982.5382717,
+    "ast_hash": "7a84a26ea40d0101b647e6b0ca5a2311",
+    "semantic_hash": ""
+  },
+  "api/internal/leave/handler.go": {
+    "mtime": 1788807047.348282,
+    "ast_hash": "27c2a35b5ed11ae0250a56f6d1211ce9",
+    "semantic_hash": ""
+  },
+  "api/internal/leave/service.go": {
+    "mtime": 1788807029.9871957,
+    "ast_hash": "e50fbd481a6a62a27cf9c2d7550106c8",
+    "semantic_hash": ""
+  },
+  "skills-lock.json": {
+    "mtime": 1788806450.273522,
+    "ast_hash": "27e259a3e9200ea3cd1563d8a89e9151",
+    "semantic_hash": ""
+  },
+  "test/e2e/test_leave.py": {
+    "mtime": 1788807251.519003,
+    "ast_hash": "969ffecf05fe4faa53234d3330b235de",
+    "semantic_hash": ""
+  },
+  "web/src/api/leave.ts": {
+    "mtime": 1788807463.1636982,
+    "ast_hash": "cf0c3d5a907c064ed309742b5bd5116b",
+    "semantic_hash": ""
+  },
+  "web/src/views/LeaveRequest.vue": {
+    "mtime": 1788807543.0116081,
+    "ast_hash": "4faf8e309f0261ad2c0af0d4e3fda7db",
+    "semantic_hash": ""
+  },
+  "web/src/views/admin/LeaveRequests.vue": {
+    "mtime": 1788807547.7626216,
+    "ast_hash": "f36c49403d9f3c1592085e8fe2008c98",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-code/SKILL.md": {
+    "mtime": 1788806449.9918158,
+    "ast_hash": "ff0db2d66f8d7207a645e7c09eefbdc8",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-copywriting/SKILL.md": {
+    "mtime": 1788806450.0549324,
+    "ast_hash": "3194eb7312409e72abe59d42ceacee39",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-human/SKILL.md": {
+    "mtime": 1788806450.129446,
+    "ast_hash": "e2217bed0a0012ee0d879c65c39267b9",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-layoutmobile/SKILL.md": {
+    "mtime": 1788806450.1951358,
+    "ast_hash": "2792d10031bafd1acdba99ba5bb9d3d1",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop-ui/SKILL.md": {
+    "mtime": 1788806450.2612147,
+    "ast_hash": "a3ece292a0d6487e3d2ff430957e2a4f",
+    "semantic_hash": ""
+  },
+  ".agents/skills/antislop/SKILL.md": {
+    "mtime": 1788806449.9288778,
+    "ast_hash": "91a90567456cba0126dc6d758b6daec3",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-code/SKILL.md": {
+    "mtime": 1788806449.9505723,
+    "ast_hash": "ef48a63916c5c371167bb34d5150adfd",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-copywriting/SKILL.md": {
+    "mtime": 1788806450.0125675,
+    "ast_hash": "71abf00fe13eedc66fdb389fa1d37367",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-human/SKILL.md": {
+    "mtime": 1788806450.0816774,
+    "ast_hash": "09629a63b42900bd7379ced9f91ab6f9",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-layoutmobile/SKILL.md": {
+    "mtime": 1788806450.1495576,
+    "ast_hash": "6997b2d91298b803f9e79957e106b350",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop-ui/SKILL.md": {
+    "mtime": 1788806450.2175524,
+    "ast_hash": "d44d129ca4b10b37121d3d1a46bf7163",
+    "semantic_hash": ""
+  },
+  "agent/skills/antislop/SKILL.md": {
+    "mtime": 1788806449.8815773,
+    "ast_hash": "9209d355634785227ae5b873b37bbcf3",
     "semantic_hash": ""
   }
 }

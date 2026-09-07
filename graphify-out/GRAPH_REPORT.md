@@ -1,13 +1,18 @@
 # Graph Report - hris-face  (2026-09-08)
 
 ## Corpus Check
-- 96 files · ~46,425 words
+- 120 files · ~96,936 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 851 nodes · 1309 edges · 59 communities (48 shown, 11 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 23 edges (avg confidence: 0.72)
+- 1434 nodes · 1982 edges · 103 communities (90 shown, 13 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 26 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `6e282e3b`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Enrollment.vue
@@ -35,7 +40,7 @@
 - RegisterRoutes
 - Service
 - Corrections.vue
-- test_challenge.py
+- Tone & Voice
 - e2e_api.py
 - PRD — HRIS Absensi Berbasis Face Recognition
 - throttle
@@ -55,26 +60,70 @@
 - AGENTS.md
 - web-src-views-checkin-vue.md
 - web/README.md
-- report.ts
+- Tone & Voice
 - tzDayjs
-- client.ts
+- antislop-layoutmobile
 - main.ts
 - EmployeeNav.vue
-- Login.vue
+- client.ts
 - test_admin_ui.js
 - test_admin_crud.py
+- antislop-layoutmobile
+- antislop-human
+- antislop-human
+- Group 1: Hard Gate (absolute, no exceptions)
+- Group 1: Hard Gate (absolute, no exceptions)
+- LeaveRequest.vue
+- Comments That Add Nothing
+- Comments That Add Nothing
+- FaceScan.vue
+- LeaveRequests.vue
+- leave/handler.go
+- Group 2: Purpose-Gate (technique allowed, purpose required)
+- Group 2: Purpose-Gate (technique allowed, purpose required)
+- agent/skills/antislop-human/contrast-check.py
+- .agents/skills/antislop-human/contrast-check.py
+- Layout & Components
+- Visual & Color
+- Layout & Components
+- Visual & Color
+- agent/skills/antislop-human/contrast-mcp.py
+- Group 3: Quality Locks (consistency)
+- Decorative Elements
+- .agents/skills/antislop-human/contrast-mcp.py
+- Group 3: Quality Locks (consistency)
+- Decorative Elements
+- antislop
+- Part 1: AI Slop Patterns (Warning Signs)
+- App & Dashboard
+- antislop
+- Part 1: AI Slop Patterns (Warning Signs)
+- App & Dashboard
+- antislop-ui
+- antislop-ui
+- The Craftsmanship Standard
+- The Craftsmanship Standard
+- test_leave.py
+- Delivery Gate (Mandatory)
+- Delivery Gate (Mandatory)
+- Part 3: Liveliness Toolkit
+- Structural & Flow
+- Part 3: Liveliness Toolkit
+- Structural & Flow
+- 0004_leave_requests.up.sql
+- 0004_leave_requests.down.sql
 
 ## God Nodes (most connected - your core abstractions)
 1. `Service` - 19 edges
-2. `PRD — HRIS Absensi Berbasis Face Recognition` - 16 edges
-3. `compilerOptions` - 15 edges
-4. `RegisterRoutes()` - 14 edges
-5. `RegisterRoutes()` - 13 edges
-6. `Service` - 12 edges
-7. `RegisterRoutes()` - 12 edges
-8. `Service` - 12 edges
-9. `employees` - 11 edges
-10. `Service` - 11 edges
+2. `Group 1: Hard Gate (absolute, no exceptions)` - 18 edges
+3. `Group 1: Hard Gate (absolute, no exceptions)` - 18 edges
+4. `PRD — HRIS Absensi Berbasis Face Recognition` - 16 edges
+5. `compilerOptions` - 15 edges
+6. `RegisterRoutes()` - 14 edges
+7. `tzDayjs()` - 14 edges
+8. `RegisterRoutes()` - 13 edges
+9. `Group 2: Purpose-Gate (technique allowed, purpose required)` - 13 edges
+10. `Group 2: Purpose-Gate (technique allowed, purpose required)` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `main()` --calls--> `NewPhotoStore()`  [INFERRED]
@@ -86,40 +135,40 @@
 - `RegisterScanRoute()` --calls--> `RequireRole()`  [INFERRED]
   api/internal/attendance/handler.go → api/internal/middleware/auth.go
 - `RegisterRoutes()` --calls--> `RequireRole()`  [INFERRED]
-  api/internal/employee/handler.go → api/internal/middleware/auth.go
+  api/internal/correction/handler.go → api/internal/middleware/auth.go
 
 ## Import Cycles
 - None detected.
 
-## Communities (59 total, 11 thin omitted)
+## Communities (103 total, 13 thin omitted)
 
 ### Community 0 - "Enrollment.vue"
-Cohesion: 0.06
-Nodes (33): submitEnrollment(), FaceScanResult, scanFace(), cameraError, canScan, canvasEl, captureJpeg(), onScan() (+25 more)
+Cohesion: 0.09
+Nodes (21): EnrollOutcome, PhotoRejection, submitEnrollment(), cameraError, cameraReady, canCapture, canSubmit, canvasEl (+13 more)
 
 ### Community 1 - "dependencies"
 Cohesion: 0.05
 Nodes (40): @ant-design/icons-vue, ant-design-vue, axios, dayjs, @mediapipe/tasks-vision, pinia, @types/node, typescript (+32 more)
 
 ### Community 2 - "face_engine.py"
-Cohesion: 0.08
-Nodes (29): eye_openness(), face_signature(), ndarray, Eye openness, used for the blink challenge (docs/PRD.md F5).  Passive anti-spoof, Mean vertical eye opening as a fraction of face width.      Normalising by face, An 8x8 grayscale thumbnail of the face crop.      The blink challenge needs to p, DetectedFace, FaceEngine (+21 more)
+Cohesion: 0.05
+Nodes (38): eye_openness(), face_signature(), ndarray, Eye openness, used for the blink challenge (docs/PRD.md F5).  Passive anti-spoof, Mean vertical eye opening as a fraction of face width.      Normalising by face, An 8x8 grayscale thumbnail of the face crop.      The blink challenge needs to p, DetectedFace, FaceEngine (+30 more)
 
 ### Community 3 - "CheckIn.vue"
-Cohesion: 0.09
-Nodes (27): submitAttendance(), submitChallenge(), fetchMe(), actionLabel, CameraError, canvasEl, captureBurst(), captureJpeg() (+19 more)
+Cohesion: 0.08
+Nodes (30): CheckInError, CheckInErrorCode, CheckInResult, submitAttendance(), submitChallenge(), fetchMe(), actionLabel, CameraError (+22 more)
 
 ### Community 4 - "MyHistory.vue"
-Cohesion: 0.15
-Nodes (15): createCorrection(), listMyCorrections(), fetchMyHistory(), corrections, days, form, load(), loading (+7 more)
+Cohesion: 0.13
+Nodes (17): createCorrection(), listMyCorrections(), fetchMyHistory(), Dayjs, DayjsArgs, corrections, days, form (+9 more)
 
 ### Community 5 - "EmployeeList.vue"
 Cohesion: 0.07
-Nodes (40): createDepartment(), createEmployee(), CreateEmployeeInput, CreateEmployeeResult, deactivateEmployee(), Department, Employee, importEmployeesCsv() (+32 more)
+Nodes (39): createDepartment(), createEmployee(), CreateEmployeeInput, CreateEmployeeResult, deactivateEmployee(), Department, Employee, importEmployeesCsv() (+31 more)
 
 ### Community 6 - "AdminLayout.vue"
-Cohesion: 0.18
-Nodes (8): refreshAccessToken(), useAuthStore, auth, initials, pageTitle, route, router, selectedKeys
+Cohesion: 0.25
+Nodes (6): auth, initials, pageTitle, route, router, selectedKeys
 
 ### Community 7 - "Service"
 Cohesion: 0.10
@@ -127,15 +176,15 @@ Nodes (22): Service, Context, meanPairwiseVariation(), Duration, Time, NewPhotoS
 
 ### Community 8 - "MasterData.vue"
 Cohesion: 0.09
-Nodes (32): approveDevice(), createLocation(), createSchedule(), deleteLocation(), Device, listDevices(), listSchedules(), Location (+24 more)
+Nodes (33): approveDevice(), createLocation(), createSchedule(), deleteLocation(), Device, listDevices(), listLocations(), listSchedules() (+25 more)
 
 ### Community 9 - "main"
 Cohesion: 0.09
 Nodes (29): main(), main(), mustEnv(), challengeHandler(), HandlerFunc, IRoutes, Service, markHandler() (+21 more)
 
 ### Community 10 - "Monitoring.vue"
-Cohesion: 0.09
-Nodes (24): exportReport(), applied, columns, defaultRange(), deletingID, departments, draft, editingID (+16 more)
+Cohesion: 0.08
+Nodes (31): AttendanceFilter, AttendanceRow, DailySummary, DayRecord, deleteAttendance(), exportReport(), fetchToday(), listAttendances() (+23 more)
 
 ### Community 11 - "Service"
 Cohesion: 0.17
@@ -146,20 +195,20 @@ Cohesion: 0.10
 Nodes (19): ES2023, node, vite.config.ts, compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module (+11 more)
 
 ### Community 13 - "Service"
-Cohesion: 0.21
-Nodes (9): Context, Pool, Time, NewService(), New(), Correction, Service, Config (+1 more)
+Cohesion: 0.11
+Nodes (19): Context, Pool, Time, NewService(), countWorkdays(), Context, Pool, Time (+11 more)
 
 ### Community 14 - "RegisterRoutes"
-Cohesion: 0.21
-Nodes (15): createHandler(), HandlerFunc, IRoutes, Service, listHandler(), myListHandler(), RegisterRoutes(), reviewHandler() (+7 more)
+Cohesion: 0.38
+Nodes (10): createHandler(), HandlerFunc, IRoutes, Service, listHandler(), myListHandler(), RegisterRoutes(), reviewHandler() (+2 more)
 
 ### Community 15 - "Service"
 Cohesion: 0.20
 Nodes (9): Context, Pool, NewService(), New(), PhotoRejection, RejectedError, Service, AnalyzeResult (+1 more)
 
 ### Community 16 - "report/handler.go"
-Cohesion: 0.34
-Nodes (19): boolLabel(), deleteHandler(), exportHandler(), exportXlsxHandler(), filterFrom(), Context, HandlerFunc, IRoutes (+11 more)
+Cohesion: 0.22
+Nodes (24): HandlerFunc, RegisteredClaims, RequireAuth(), RequireRole(), boolLabel(), deleteHandler(), exportHandler(), exportXlsxHandler() (+16 more)
 
 ### Community 17 - "Service"
 Cohesion: 0.21
@@ -193,9 +242,9 @@ Nodes (6): Context, Pool, NewService(), Location, Schedule, Service
 Cohesion: 0.22
 Nodes (11): Correction, listCorrections(), reviewCorrection(), columns, confirmReview(), items, load(), loading (+3 more)
 
-### Community 25 - "test_challenge.py"
-Cohesion: 0.18
-Nodes (9): analyze(), Image, JSONResponse, Request, jpeg_bytes(), post(), Verifies the movement challenge (docs/PRD.md F5) against the real stack.  The pr, Simulates a person moving slightly between frames. (+1 more)
+### Community 25 - "Tone & Voice"
+Cohesion: 0.05
+Nodes (38): Actorless Passive, All-Caps Emphasis, antislop-copywriting, Aphorism Formulas, Boldface Overuse, Chatbot Closers, Copywriting Skill Checklist, Draft, audit, final (+30 more)
 
 ### Community 26 - "e2e_api.py"
 Cohesion: 0.17
@@ -237,17 +286,17 @@ Nodes (19): Accuracy, Anti-spoof models, Face service, Run, Setup, Two things th
 Cohesion: 0.40
 Nodes (4): End-to-end tests and accuracy benchmarks, Running, Test identities, What these tests still do not cover
 
-### Community 51 - "report.ts"
-Cohesion: 0.21
-Nodes (11): AttendanceFilter, AttendanceRow, DailySummary, DayRecord, deleteAttendance(), fetchToday(), listAttendances(), updateAttendance() (+3 more)
+### Community 51 - "Tone & Voice"
+Cohesion: 0.05
+Nodes (38): Actorless Passive, All-Caps Emphasis, antislop-copywriting, Aphorism Formulas, Boldface Overuse, Chatbot Closers, Copywriting Skill Checklist, Draft, audit, final (+30 more)
 
 ### Community 52 - "tzDayjs"
-Cohesion: 0.33
-Nodes (5): Dayjs, DayjsArgs, tzDayjs(), onEditOpen(), openCorrection()
+Cohesion: 0.29
+Nodes (8): tzDayjs(), defaultRange(), onApplyFilter(), onEditOpen(), onRekapBulanIni(), onResetFilter(), openModal(), openCorrection()
 
-### Community 53 - "client.ts"
-Cohesion: 0.24
-Nodes (6): CheckInError, CheckInErrorCode, CheckInResult, apiClient, EnrollOutcome, PhotoRejection
+### Community 53 - "antislop-layoutmobile"
+Cohesion: 0.07
+Nodes (29): 100vh Sections, antislop-layoutmobile, Bottom Nav That Eats Content, Breakpoint Driven by Device List, Breakpoints, Columns That Don't Collapse, Desktop-Only Layout, Desktop-Sized Everything (+21 more)
 
 ### Community 54 - "main.ts"
 Cohesion: 0.27
@@ -257,29 +306,197 @@ Nodes (4): i18n, router, attendanceStatusColor, themeTokens
 Cohesion: 0.22
 Nodes (6): auth, initials, isAdmin, links, route, router
 
-### Community 56 - "Login.vue"
+### Community 56 - "client.ts"
+Cohesion: 0.19
+Nodes (9): apiClient, refreshAccessToken(), FaceScanResult, useAuthStore, auth, errorMessage, form, router (+1 more)
+
+### Community 59 - "antislop-layoutmobile"
+Cohesion: 0.07
+Nodes (29): 100vh Sections, antislop-layoutmobile, Bottom Nav That Eats Content, Breakpoint Driven by Device List, Breakpoints, Columns That Don't Collapse, Desktop-Only Layout, Desktop-Sized Everything (+21 more)
+
+### Community 60 - "antislop-human"
+Cohesion: 0.10
+Nodes (20): antislop-human, Broken Tab Order, Color & Contrast, Color-Only Feedback, Focus & States, How to use this skill, Human Skill Checklist, Keyboard (+12 more)
+
+### Community 61 - "antislop-human"
+Cohesion: 0.10
+Nodes (20): antislop-human, Broken Tab Order, Color & Contrast, Color-Only Feedback, Focus & States, How to use this skill, Human Skill Checklist, Keyboard (+12 more)
+
+### Community 62 - "Group 1: Hard Gate (absolute, no exceptions)"
+Cohesion: 0.11
+Nodes (18): Group 1: Hard Gate (absolute, no exceptions), R-02 — Copywriting, R-03 — Mobile Responsiveness, R-17 — Data & Numbers, R-18 — Testimonials, R-23 — Clarification & Visual Assets, R-24 — Navigation, R-25 — Color Contrast (+10 more)
+
+### Community 63 - "Group 1: Hard Gate (absolute, no exceptions)"
+Cohesion: 0.11
+Nodes (18): Group 1: Hard Gate (absolute, no exceptions), R-02 — Copywriting, R-03 — Mobile Responsiveness, R-17 — Data & Numbers, R-18 — Testimonials, R-23 — Clarification & Visual Assets, R-24 — Navigation, R-25 — Color Contrast (+10 more)
+
+### Community 64 - "LeaveRequest.vue"
+Cohesion: 0.17
+Nodes (16): createLeaveRequest(), fetchMyLeaveBalance(), LeaveBalance, LeaveStatus, LeaveType, listMyLeaveRequests(), balance, form (+8 more)
+
+### Community 65 - "Comments That Add Nothing"
+Cohesion: 0.12
+Nodes (16): antislop-code, Code Comment Checklist, Comments That Add Nothing, Decorative Emoji, Decorative Separators, Empty Labels, End Markers, How It Should Read (+8 more)
+
+### Community 66 - "Comments That Add Nothing"
+Cohesion: 0.12
+Nodes (16): antislop-code, Code Comment Checklist, Comments That Add Nothing, Decorative Emoji, Decorative Separators, Empty Labels, End Markers, How It Should Read (+8 more)
+
+### Community 67 - "FaceScan.vue"
+Cohesion: 0.15
+Nodes (13): scanFace(), cameraError, canScan, canvasEl, captureJpeg(), onScan(), result, scanning (+5 more)
+
+### Community 68 - "LeaveRequests.vue"
+Cohesion: 0.16
+Nodes (14): decideLeaveRequest(), LeaveRequest, listAdminLeaveRequests(), columns, confirmReview(), items, labelForType(), load() (+6 more)
+
+### Community 69 - "leave/handler.go"
+Cohesion: 0.41
+Nodes (13): createHandler(), Context, HandlerFunc, IRoutes, Service, listHandler(), myBalanceHandler(), myListHandler() (+5 more)
+
+### Community 70 - "Group 2: Purpose-Gate (technique allowed, purpose required)"
+Cohesion: 0.15
+Nodes (13): Group 2: Purpose-Gate (technique allowed, purpose required), R-01 — Color & Gradients, R-04 — Icons, R-06 — Typography, R-07 — Background, R-08 — Button Arrows, R-09 — Badges, R-10 — Glassmorphism (+5 more)
+
+### Community 71 - "Group 2: Purpose-Gate (technique allowed, purpose required)"
+Cohesion: 0.15
+Nodes (13): Group 2: Purpose-Gate (technique allowed, purpose required), R-01 — Color & Gradients, R-04 — Icons, R-06 — Typography, R-07 — Background, R-08 — Button Arrows, R-09 — Badges, R-10 — Glassmorphism (+5 more)
+
+### Community 72 - "agent/skills/antislop-human/contrast-check.py"
+Cohesion: 0.32
+Nodes (11): contrast_ratio(), linearize(), luminance(), main(), parse_hex(), parse_pairing(), parse_reference_rows(), Turn 'White on #333333' or '#555555 on black' into two RGB tuples. (+3 more)
+
+### Community 73 - ".agents/skills/antislop-human/contrast-check.py"
+Cohesion: 0.32
+Nodes (11): contrast_ratio(), linearize(), luminance(), main(), parse_hex(), parse_pairing(), parse_reference_rows(), Turn 'White on #333333' or '#555555 on black' into two RGB tuples. (+3 more)
+
+### Community 74 - "Layout & Components"
+Cohesion: 0.18
+Nodes (11): 4-Column Template Footer, Bento Grid, Copy-Paste Feature Cards, Demo Without a Product, "How It Works" Always 3 Steps, Layout & Components, Monotonous Template Layout, "Most Popular" Pricing Card (+3 more)
+
+### Community 75 - "Visual & Color"
+Cohesion: 0.18
+Nodes (11): Background Grid, Dark Mode Default for No Reason, Excessive Accent Color, Excessive Border Radius, Excessive Glassmorphism, Generic Blue-Purple Gradient, Glow Everywhere, Overly Soft Shadows (+3 more)
+
+### Community 76 - "Layout & Components"
+Cohesion: 0.18
+Nodes (11): 4-Column Template Footer, Bento Grid, Copy-Paste Feature Cards, Demo Without a Product, "How It Works" Always 3 Steps, Layout & Components, Monotonous Template Layout, "Most Popular" Pricing Card (+3 more)
+
+### Community 77 - "Visual & Color"
+Cohesion: 0.18
+Nodes (11): Background Grid, Dark Mode Default for No Reason, Excessive Accent Color, Excessive Border Radius, Excessive Glassmorphism, Generic Blue-Purple Gradient, Glow Everywhere, Overly Soft Shadows (+3 more)
+
+### Community 78 - "agent/skills/antislop-human/contrast-mcp.py"
+Cohesion: 0.38
+Nodes (9): _channel(), check_contrast(), contrast_ratio(), _error(), main(), relative_luminance(), _reply(), _send() (+1 more)
+
+### Community 79 - "Group 3: Quality Locks (consistency)"
+Cohesion: 0.20
+Nodes (10): Group 3: Quality Locks (consistency), R-05 — Layout & Page Structure, R-11 — Border Radius, R-15 — CTA (Call to Action), R-16 — Copywriting & Buzzwords, R-20 — Visual Identity, R-21 — Dark Mode, R-29 — Color Palette (+2 more)
+
+### Community 80 - "Decorative Elements"
+Cohesion: 0.20
+Nodes (10): AI Capsule Badges, Colored Left Stripe, Decorative Elements, Emoji as Decoration, Fake Terminal Window, Generic AI Icons, Generic AI Typography, Illustrations With No Connection (+2 more)
+
+### Community 81 - ".agents/skills/antislop-human/contrast-mcp.py"
+Cohesion: 0.38
+Nodes (9): _channel(), check_contrast(), contrast_ratio(), _error(), main(), relative_luminance(), _reply(), _send() (+1 more)
+
+### Community 82 - "Group 3: Quality Locks (consistency)"
+Cohesion: 0.20
+Nodes (10): Group 3: Quality Locks (consistency), R-05 — Layout & Page Structure, R-11 — Border Radius, R-15 — CTA (Call to Action), R-16 — Copywriting & Buzzwords, R-20 — Visual Identity, R-21 — Dark Mode, R-29 — Color Palette (+2 more)
+
+### Community 83 - "Decorative Elements"
+Cohesion: 0.20
+Nodes (10): AI Capsule Badges, Colored Left Stripe, Decorative Elements, Emoji as Decoration, Fake Terminal Window, Generic AI Icons, Generic AI Typography, Illustrations With No Connection (+2 more)
+
+### Community 84 - "antislop"
+Cohesion: 0.25
+Nodes (7): antislop, Core Principle, First-Run Install Wizard, Functional Patterns, Part 2: Mandatory Rules (R-01 to R-38, grouped), Two Usage Modes, What This Is (and What It Isn't)
+
+### Community 85 - "Part 1: AI Slop Patterns (Warning Signs)"
+Cohesion: 0.25
+Nodes (8): Accessibility, Copywriting & Content, Decorative Elements, Functionality & Content, Identity & Originality, Layout & Components, Part 1: AI Slop Patterns (Warning Signs), Visual & Color
+
+### Community 86 - "App & Dashboard"
+Cohesion: 0.25
+Nodes (8): App & Dashboard, Charts Without a Question, Default Dashboard Shell, Filler Activity Feed, Filler Data in Fields and Columns, Generic Table Columns, Placeholder Empty and Loading States, Stat Cards With Invented Numbers
+
+### Community 87 - "antislop"
+Cohesion: 0.25
+Nodes (7): antislop, Core Principle, First-Run Install Wizard, Functional Patterns, Part 2: Mandatory Rules (R-01 to R-38, grouped), Two Usage Modes, What This Is (and What It Isn't)
+
+### Community 88 - "Part 1: AI Slop Patterns (Warning Signs)"
+Cohesion: 0.25
+Nodes (8): Accessibility, Copywriting & Content, Decorative Elements, Functionality & Content, Identity & Originality, Layout & Components, Part 1: AI Slop Patterns (Warning Signs), Visual & Color
+
+### Community 89 - "App & Dashboard"
+Cohesion: 0.25
+Nodes (8): App & Dashboard, Charts Without a Question, Default Dashboard Shell, Filler Activity Feed, Filler Data in Fields and Columns, Generic Table Columns, Placeholder Empty and Loading States, Stat Cards With Invented Numbers
+
+### Community 90 - "antislop-ui"
 Cohesion: 0.29
-Nodes (5): auth, errorMessage, form, router, submitting
+Nodes (6): antislop-ui, Endless Pulses and Loops, How to use this skill, Motion, Template Animations Stacked, UI Skill Checklist
+
+### Community 91 - "antislop-ui"
+Cohesion: 0.29
+Nodes (6): antislop-ui, Endless Pulses and Loops, How to use this skill, Motion, Template Animations Stacked, UI Skill Checklist
+
+### Community 92 - "The Craftsmanship Standard"
+Cohesion: 0.33
+Nodes (6): C-1 — Intentionality, C-2 — Functional Completeness, C-3 — Content-Driven Composition, C-4 — Resilience, C-5 — Evidence Over Claims, The Craftsmanship Standard
+
+### Community 93 - "The Craftsmanship Standard"
+Cohesion: 0.33
+Nodes (6): C-1 — Intentionality, C-2 — Functional Completeness, C-3 — Content-Driven Composition, C-4 — Resilience, C-5 — Evidence Over Claims, The Craftsmanship Standard
+
+### Community 94 - "test_leave.py"
+Cohesion: 0.33
+Nodes (3): prev_weekday(), Verifies the leave/permission/sick (cuti/izin/sakit) module: create, list, balan, Most recent date (<= d) with the given Python weekday (Mon=0..Sun=6).
+
+### Community 95 - "Delivery Gate (Mandatory)"
+Cohesion: 0.40
+Nodes (5): Block 1: Hard Gate (absolute), Block 2: Purpose-Gate (technique allowed, reason required), Block 3: Liveliness (required to be alive, not just clean), Block 4: Craftsmanship & Quality Locks, Delivery Gate (Mandatory)
+
+### Community 96 - "Delivery Gate (Mandatory)"
+Cohesion: 0.40
+Nodes (5): Block 1: Hard Gate (absolute), Block 2: Purpose-Gate (technique allowed, reason required), Block 3: Liveliness (required to be alive, not just clean), Block 4: Craftsmanship & Quality Locks, Delivery Gate (Mandatory)
+
+### Community 97 - "Part 3: Liveliness Toolkit"
+Cohesion: 0.50
+Nodes (4): Design Read (how the dials are set), Levers (how the dials become visual decisions), Part 3: Liveliness Toolkit, Three Dials (required)
+
+### Community 98 - "Structural & Flow"
+Cohesion: 0.50
+Nodes (4): Dead Navigation, Non-Functional Controls, Sections That Fill a Template, Structural & Flow
+
+### Community 99 - "Part 3: Liveliness Toolkit"
+Cohesion: 0.50
+Nodes (4): Design Read (how the dials are set), Levers (how the dials become visual decisions), Part 3: Liveliness Toolkit, Three Dials (required)
+
+### Community 100 - "Structural & Flow"
+Cohesion: 0.50
+Nodes (4): Dead Navigation, Non-Functional Controls, Sections That Fill a Template, Structural & Flow
 
 ## Knowledge Gaps
-- **273 isolated node(s):** `github.com/hris-face/api`, `Service`, `loginRequest`, `createRequest`, `reviewRequest` (+268 more)
+- **670 isolated node(s):** `github.com/hris-face/api`, `Service`, `loginRequest`, `createRequest`, `reviewRequest` (+665 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RequireRole()` connect `RegisterRoutes` to `report/handler.go`, `main`, `employee/handler.go`, `RegisterRoutes`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **Why does `main()` connect `main` to `RegisterRoutes`, `Service`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
-- **Why does `RegisterScanRoute()` connect `main` to `RegisterRoutes`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **Why does `RequireRole()` connect `report/handler.go` to `leave/handler.go`, `main`, `RegisterRoutes`, `employee/handler.go`, `RegisterRoutes`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
+- **Why does `main()` connect `main` to `report/handler.go`, `Service`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+- **Why does `RegisterScanRoute()` connect `main` to `report/handler.go`?**
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **What connects `github.com/hris-face/api`, `Service`, `loginRequest` to the rest of the system?**
-  _273 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _670 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Enrollment.vue` be split into smaller, more focused modules?**
-  _Cohesion score 0.06025641025641026 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `face_engine.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.07557354925775979 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05411764705882353 - nodes in this community are weakly interconnected._

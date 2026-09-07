@@ -292,6 +292,7 @@ type DailySummary struct {
 	Late        int    `json:"late"`
 	NotYet      int    `json:"not_yet"`
 	CheckedOut  int    `json:"checked_out"`
+	OnLeave     int    `json:"on_leave"`
 }
 
 func (s *Service) Today(ctx context.Context, managerID string) (*DailySummary, error) {
@@ -308,8 +309,9 @@ func (s *Service) Today(ctx context.Context, managerID string) (*DailySummary, e
 			count(*) FILTER (WHERE e.status = 'active'),
 			count(*) FILTER (WHERE ci.status = 'on_time'),
 			count(*) FILTER (WHERE ci.status = 'late'),
-			count(*) FILTER (WHERE e.status = 'active' AND ci.id IS NULL),
-			count(*) FILTER (WHERE co.id IS NOT NULL)
+			count(*) FILTER (WHERE e.status = 'active' AND ci.id IS NULL AND lv.id IS NULL),
+			count(*) FILTER (WHERE co.id IS NOT NULL),
+			count(*) FILTER (WHERE e.status = 'active' AND lv.id IS NOT NULL)
 		FROM employees e
 		LEFT JOIN LATERAL (
 			SELECT a.id, a.status FROM attendances a
@@ -323,8 +325,14 @@ func (s *Service) Today(ctx context.Context, managerID string) (*DailySummary, e
 			  AND a.occurred_at::date = CURRENT_DATE
 			LIMIT 1
 		) co ON true
+		LEFT JOIN LATERAL (
+			SELECT lr.id FROM leave_requests lr
+			WHERE lr.employee_id = e.id AND lr.status = 'approved'
+			  AND CURRENT_DATE BETWEEN lr.start_date AND lr.end_date
+			LIMIT 1
+		) lv ON true
 		WHERE e.status != 'inactive'`+scope, args...).
-		Scan(&sum.TotalActive, &sum.OnTime, &sum.Late, &sum.NotYet, &sum.CheckedOut)
+		Scan(&sum.TotalActive, &sum.OnTime, &sum.Late, &sum.NotYet, &sum.CheckedOut, &sum.OnLeave)
 	if err != nil {
 		return nil, err
 	}
@@ -340,12 +348,15 @@ type DayRecord struct {
 	CheckOutAt *time.Time `json:"check_out_at"`
 	Status     string     `json:"status"`
 	Minutes    int        `json:"minutes"`
+	LeaveType  *string    `json:"leave_type,omitempty"`
 }
 
 func (s *Service) MyHistory(ctx context.Context, userID string, from, to time.Time) ([]DayRecord, error) {
 	rows, err := s.pool.Query(ctx, `
 		SELECT d::date::text,
-		       ci.occurred_at, co.occurred_at, COALESCE(ci.status, 'absent')
+		       ci.occurred_at, co.occurred_at,
+		       COALESCE(ci.status, CASE WHEN lv.id IS NOT NULL THEN 'on_leave' END, 'absent'),
+		       lv.type::text
 		FROM generate_series($2::date, $3::date - interval '1 day', interval '1 day') d
 		LEFT JOIN employees e ON e.user_id = $1
 		LEFT JOIN LATERAL (
@@ -358,6 +369,12 @@ func (s *Service) MyHistory(ctx context.Context, userID string, from, to time.Ti
 			WHERE a.employee_id = e.id AND a.type = 'check_out' AND a.occurred_at::date = d::date
 			ORDER BY a.occurred_at DESC LIMIT 1
 		) co ON true
+		LEFT JOIN LATERAL (
+			SELECT lr.id, lr.type FROM leave_requests lr
+			WHERE lr.employee_id = e.id AND lr.status = 'approved'
+			  AND d::date BETWEEN lr.start_date AND lr.end_date
+			LIMIT 1
+		) lv ON true
 		ORDER BY d DESC`, userID, from, to)
 	if err != nil {
 		return nil, err
@@ -367,7 +384,7 @@ func (s *Service) MyHistory(ctx context.Context, userID string, from, to time.Ti
 	out := []DayRecord{}
 	for rows.Next() {
 		var r DayRecord
-		if err := rows.Scan(&r.Date, &r.CheckInAt, &r.CheckOutAt, &r.Status); err != nil {
+		if err := rows.Scan(&r.Date, &r.CheckInAt, &r.CheckOutAt, &r.Status, &r.LeaveType); err != nil {
 			return nil, err
 		}
 		if r.CheckInAt != nil && r.CheckOutAt != nil {

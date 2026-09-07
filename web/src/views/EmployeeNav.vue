@@ -5,7 +5,7 @@
 // navigate and visibly a different product. This mirrors AdminLayout's sider:
 // same brand mark, same solid-blue active pill, same box-shadow-not-dropdown
 // language, so the employee side reads as the same app, not a bolted-on page.
-import { CalendarOutlined, DashboardOutlined, DownOutlined, HistoryOutlined, LogoutOutlined, TeamOutlined } from '@ant-design/icons-vue'
+import { CalendarOutlined, DashboardOutlined, DownOutlined, FileTextOutlined, HistoryOutlined, LogoutOutlined, TeamOutlined } from '@ant-design/icons-vue'
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
@@ -22,6 +22,7 @@ const initials = computed(() =>
 const links = [
   { to: '/checkin', label: 'Absen', icon: CalendarOutlined },
   { to: '/riwayat', label: 'Riwayat Saya', icon: HistoryOutlined },
+  { to: '/cuti', label: 'Cuti', icon: FileTextOutlined },
   { to: '/tim', label: 'Tim', icon: TeamOutlined },
 ]
 
