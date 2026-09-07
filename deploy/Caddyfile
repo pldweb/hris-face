@@ -1,0 +1,16 @@
+# docs/PRD.md section 11.2 -- Caddy is the only process bound to a public interface.
+# HTTPS is not optional here: getUserMedia refuses to run outside a secure context,
+# so no TLS means no camera means no product.
+hris.perusahaan.com {
+	root * /var/www/hris
+	encode gzip zstd
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8080
+	}
+
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}

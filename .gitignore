@@ -1,0 +1,32 @@
+# Go
+api/bin/
+api/*.env
+
+# Python
+face/.venv/
+face/__pycache__/
+face/**/__pycache__/
+face/models/*.onnx
+face/models/*.onnx.data
+
+# Node
+web/node_modules/
+web/dist/
+
+# Impeccable working files
+.impeccable/mocks/
+.impeccable/build/
+.impeccable/review/
+
+# graphify: keep the shareable graph artifacts, drop machine-local state,
+# extraction cache, and the daily curated-graph backups (they just accumulate)
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/cache/
+graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+
+# Codex hooks reference an absolute local path -- not portable across machines
+.codex/
+
+# OS / editor
+.DS_Store

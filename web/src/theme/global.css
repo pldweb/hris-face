@@ -1,0 +1,42 @@
+/* docs/PRD.md 10.2: time figures never wobble as the clock ticks. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #f5f6f8;
+  color: #172554;
+  -webkit-font-smoothing: antialiased;
+  /* AntD's fontFamily token only reaches AntD's own components; setting it here
+     too is what makes it apply to every raw element (h1/p/div) across the app. */
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+}
+
+a {
+  color: #21409a;
+}
+
+.ant-btn {
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.ant-btn-primary {
+  box-shadow: 0 6px 14px rgba(33, 64, 154, 0.18);
+}
+
+.ant-btn-primary:not(:disabled):hover {
+  box-shadow: 0 8px 18px rgba(33, 64, 154, 0.24);
+}
+
+.ant-card {
+  box-shadow: 0 10px 28px rgba(23, 37, 84, 0.05);
+}

@@ -1,0 +1,181 @@
+package attendance
+
+import (
+	"errors"
+	"io"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/hris-face/api/internal/middleware"
+)
+
+const deviceCookieName = "device_id"
+const deviceCookieMaxAge = 5 * 365 * 24 * 3600 // device binding should outlive sessions
+
+func RegisterRoutes(r gin.IRoutes, svc *Service) {
+	r.POST("/attendance/check-in", markHandler(svc, "check_in"))
+	r.POST("/attendance/check-out", markHandler(svc, "check_out"))
+	r.POST("/attendance/challenge/check-in", challengeHandler(svc, "check_in"))
+	r.POST("/attendance/challenge/check-out", challengeHandler(svc, "check_out"))
+}
+
+func RegisterScanRoute(r gin.IRoutes, svc *Service) {
+	r.POST("/admin/face-scan", middleware.RequireRole("hr", "superadmin"), scanHandler(svc))
+}
+
+func scanHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		imageJPEG, err := io.ReadAll(io.LimitReader(c.Request.Body, 5<<20))
+		if err != nil || len(imageJPEG) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "gambar tidak valid"})
+			return
+		}
+		result, err := svc.Scan(c.Request.Context(), imageJPEG)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal memeriksa wajah"})
+			return
+		}
+		c.JSON(http.StatusOK, result)
+	}
+}
+
+// challengeHandler takes a multi-frame sequence for the case where the passive
+// anti-spoof model was unsure about a single frame.
+func challengeHandler(svc *Service, kind string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		form, err := c.MultipartForm()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "form tidak valid"})
+			return
+		}
+
+		files := form.File["frames"]
+		frames := make([][]byte, 0, len(files))
+		for _, fh := range files {
+			f, err := fh.Open()
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "gagal membaca frame"})
+				return
+			}
+			data, err := io.ReadAll(io.LimitReader(f, 5<<20))
+			f.Close()
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "gagal membaca frame"})
+				return
+			}
+			frames = append(frames, data)
+		}
+
+		deviceKey, _ := c.Cookie(deviceCookieName)
+		result, challenge, issuedKey, err := svc.RecordWithChallenge(
+			c.Request.Context(), kind, c.GetString("user_id"), frames,
+			deviceKey, c.Request.UserAgent(), c.ClientIP())
+
+		// The cookie is set whenever a device was resolved, BEFORE checking err:
+		// resolveDevice can commit a new approved device row even when the
+		// attendance write that follows it then fails a business rule. Setting
+		// the cookie only on the success path silently orphaned that device --
+		// the next request had no cookie to present, so it registered ANOTHER
+		// device, burning through the two-device limit in a couple of failed
+		// attempts even on the employee's own, unchanged laptop.
+		if issuedKey != "" {
+			c.SetSameSite(http.SameSiteLaxMode)
+			c.SetCookie(deviceCookieName, issuedKey, deviceCookieMaxAge, "/api/v1", "", true, true)
+		}
+
+		if err != nil {
+			c.JSON(statusFor(err), gin.H{"error": messageFor(err)})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"result": result, "challenge": challenge})
+	}
+}
+
+func markHandler(svc *Service, kind string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		imageJPEG, err := io.ReadAll(io.LimitReader(c.Request.Body, 5<<20)) // 5MB cap
+		if err != nil || len(imageJPEG) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "gambar tidak valid"})
+			return
+		}
+
+		deviceKey, _ := c.Cookie(deviceCookieName)
+		userAgent := c.Request.UserAgent()
+
+		userID := c.GetString("user_id")
+
+		var result *Result
+		var issuedKey string
+		if kind == "check_in" {
+			result, issuedKey, err = svc.CheckIn(c.Request.Context(), userID, imageJPEG, deviceKey, userAgent, c.ClientIP())
+		} else {
+			result, issuedKey, err = svc.CheckOut(c.Request.Context(), userID, imageJPEG, deviceKey, userAgent, c.ClientIP())
+		}
+
+		// Set before checking err -- see the comment in challengeHandler. A device
+		// can be resolved and committed even when the attendance write that
+		// follows then fails on a business rule (already marked, no check-in
+		// yet, ...); the client must still learn its key or it silently loses
+		// that device slot on every subsequent request.
+		if issuedKey != "" {
+			c.SetSameSite(http.SameSiteLaxMode)
+			c.SetCookie(deviceCookieName, issuedKey, deviceCookieMaxAge, "/api/v1", "", true, true)
+		}
+
+		if err != nil {
+			c.JSON(statusFor(err), gin.H{"error": messageFor(err)})
+			return
+		}
+
+		c.JSON(http.StatusOK, result)
+	}
+}
+
+func statusFor(err error) int {
+	switch {
+	case errors.Is(err, ErrNoFaceMatch), errors.Is(err, ErrLivenessFailed),
+		errors.Is(err, ErrStillImage), errors.Is(err, ErrChallengeFailed):
+		return http.StatusUnprocessableEntity
+	case errors.Is(err, ErrChallengeRequired):
+		return http.StatusPreconditionRequired
+	case errors.Is(err, ErrTooFewFrames):
+		return http.StatusBadRequest
+	case errors.Is(err, ErrAlreadyMarked), errors.Is(err, ErrNoCheckInYet):
+		return http.StatusConflict
+	case errors.Is(err, ErrOutsideOfficeNet), errors.Is(err, ErrDeviceNotApproved):
+		return http.StatusForbidden
+	case errors.Is(err, ErrNoEmployeeRecord):
+		return http.StatusNotFound
+	default:
+		return http.StatusInternalServerError
+	}
+}
+
+func messageFor(err error) string {
+	switch {
+	case errors.Is(err, ErrNoFaceMatch):
+		return "Wajah tidak dikenali. Coba lagi atau ajukan koreksi manual."
+	case errors.Is(err, ErrLivenessFailed):
+		return "Gunakan wajah asli, bukan foto atau layar."
+	case errors.Is(err, ErrChallengeRequired):
+		return "Perlu verifikasi gerakan. Hadap kamera dan gerakkan kepala sedikit."
+	case errors.Is(err, ErrStillImage):
+		return "Tidak terdeteksi gerakan. Pastikan Anda menghadap kamera langsung."
+	case errors.Is(err, ErrChallengeFailed):
+		return "Verifikasi gerakan gagal. Coba di tempat yang lebih terang."
+	case errors.Is(err, ErrTooFewFrames):
+		return "Verifikasi gerakan butuh beberapa frame."
+	case errors.Is(err, ErrAlreadyMarked):
+		return "Sudah absen untuk sesi ini hari ini."
+	case errors.Is(err, ErrNoCheckInYet):
+		return "Belum ada absen masuk hari ini."
+	case errors.Is(err, ErrNoEmployeeRecord):
+		return "Akun ini tidak terhubung ke data karyawan."
+	case errors.Is(err, ErrOutsideOfficeNet):
+		return "Absen hanya bisa dilakukan dari jaringan kantor, kecuali diizinkan remote."
+	case errors.Is(err, ErrDeviceNotApproved):
+		return "Perangkat ini belum disetujui HR. Hubungi HR untuk mendaftarkannya."
+	default:
+		return "Terjadi kesalahan saat memverifikasi wajah."
+	}
+}

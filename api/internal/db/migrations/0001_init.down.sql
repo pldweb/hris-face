@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS audit_logs;
+DROP TABLE IF EXISTS attendance_corrections;
+DROP TABLE IF EXISTS attendances;
+DROP TABLE IF EXISTS devices;
+DROP TABLE IF EXISTS face_embeddings;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS work_schedules;
+DROP TABLE IF EXISTS work_locations;
+DROP TABLE IF EXISTS departments;
+DROP TYPE IF EXISTS user_role;

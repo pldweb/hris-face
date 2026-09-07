@@ -1,0 +1,20 @@
+[Unit]
+Description=HRIS Go API
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=hris
+WorkingDirectory=/opt/hris/api
+ExecStart=/opt/hris/api/api
+EnvironmentFile=/etc/hris/api.env
+Restart=always
+RestartSec=3
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/hris
+
+[Install]
+WantedBy=multi-user.target
