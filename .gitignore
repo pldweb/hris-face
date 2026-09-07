@@ -4,8 +4,8 @@ api/*.env
 
 # Python
 face/.venv/
-face/__pycache__/
-face/**/__pycache__/
+**/__pycache__/
+*.pyc
 face/models/*.onnx
 face/models/*.onnx.data
 
