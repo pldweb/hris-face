@@ -6,6 +6,7 @@ Lihat [docs/PRD.md](docs/PRD.md) untuk spesifikasi lengkap dan [PRODUCT.md](PROD
 
 ```
 api/     Go — REST API, aturan bisnis absensi, auth, migrasi database
+         cmd/mcp — MCP server (read-only) untuk asisten AI, lihat docs/MCP.md
 face/    Python — deteksi wajah, embedding ArcFace, anti-spoof (internal, 127.0.0.1 saja)
 web/     Vue 3 + Ant Design Vue — SPA karyawan & admin
 deploy/  systemd units, Caddyfile, deploy.sh — VPS tanpa Docker

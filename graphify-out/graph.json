@@ -510,6 +510,39 @@
       "norm_label": "main()"
     },
     {
+      "label": "mcp/main.go",
+      "file_type": "code",
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "api_cmd_mcp_main",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "mcp/main.go"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "api_cmd_mcp_main_main",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "main()"
+    },
+    {
+      "label": "envOr()",
+      "file_type": "code",
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L54",
+      "_origin": "ast",
+      "id": "api_cmd_mcp_main_envor",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "envor()"
+    },
+    {
       "label": "seed/main.go",
       "file_type": "code",
       "source_file": "api/cmd/seed/main.go",
@@ -906,6 +939,17 @@
       "community": 7,
       "community_name": "Service",
       "norm_label": "pool"
+    },
+    {
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "api_internal_attendance_service_go_client",
+      "community": 7,
+      "community_name": "Service",
+      "norm_label": "client"
     },
     {
       "label": "IPNet",
@@ -1485,7 +1529,7 @@
       "source_file": "",
       "source_location": "",
       "_origin": "ast",
-      "id": "mutex",
+      "id": "api_internal_auth_throttle_go_mutex",
       "community": 28,
       "community_name": "throttle",
       "norm_label": "mutex"
@@ -1684,8 +1728,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_internal_correction_handler",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "correction/handler.go"
     },
     {
@@ -1695,8 +1739,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "api_internal_correction_handler_registerroutes",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "registerroutes()"
     },
     {
@@ -1706,8 +1750,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "api_internal_correction_handler_go_iroutes",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "iroutes"
     },
     {
@@ -1717,8 +1761,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "api_internal_correction_handler_go_service",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "service"
     },
     {
@@ -1728,8 +1772,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "correction_createrequest",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "createrequest"
     },
     {
@@ -1739,8 +1783,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "api_internal_correction_handler_createhandler",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "createhandler()"
     },
     {
@@ -1750,8 +1794,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "api_internal_correction_handler_go_handlerfunc",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "handlerfunc"
     },
     {
@@ -1761,8 +1805,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "api_internal_correction_handler_mylisthandler",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "mylisthandler()"
     },
     {
@@ -1772,8 +1816,8 @@
       "source_location": "L67",
       "_origin": "ast",
       "id": "api_internal_correction_handler_listhandler",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "listhandler()"
     },
     {
@@ -1783,8 +1827,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "correction_reviewrequest",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "reviewrequest"
     },
     {
@@ -1794,8 +1838,8 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "api_internal_correction_handler_reviewhandler",
-      "community": 113,
-      "community_name": "RegisterRoutes",
+      "community": 9,
+      "community_name": "main",
       "norm_label": "reviewhandler()"
     },
     {
@@ -3075,6 +3119,17 @@
       "norm_label": "pool"
     },
     {
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "api_internal_enrollment_service_go_client",
+      "community": 15,
+      "community_name": "Service",
+      "norm_label": "client"
+    },
+    {
       "label": "NewService()",
       "file_type": "code",
       "source_file": "api/internal/enrollment/service.go",
@@ -3141,15 +3196,15 @@
       "norm_label": ".flagduplicateforreview()"
     },
     {
-      "label": "client.go",
+      "label": "faceclient/client.go",
       "file_type": "code",
       "source_file": "api/internal/faceclient/client.go",
       "source_location": "L1",
       "_origin": "ast",
       "id": "api_internal_faceclient_client",
-      "community": 15,
-      "community_name": "Service",
-      "norm_label": "client.go"
+      "community": 106,
+      "community_name": "faceclient/client.go",
+      "norm_label": "faceclient/client.go"
     },
     {
       "label": "Client",
@@ -3158,8 +3213,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "faceclient_client",
-      "community": 15,
-      "community_name": "Service",
+      "community": 106,
+      "community_name": "faceclient/client.go",
       "norm_label": "client"
     },
     {
@@ -3169,8 +3224,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "api_internal_faceclient_client_new",
-      "community": 15,
-      "community_name": "Service",
+      "community": 106,
+      "community_name": "faceclient/client.go",
       "norm_label": "new()"
     },
     {
@@ -3180,8 +3235,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "faceclient_analyzeresult",
-      "community": 15,
-      "community_name": "Service",
+      "community": 106,
+      "community_name": "faceclient/client.go",
       "norm_label": "analyzeresult"
     },
     {
@@ -3191,8 +3246,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "faceclient_client_analyze",
-      "community": 15,
-      "community_name": "Service",
+      "community": 106,
+      "community_name": "faceclient/client.go",
       "norm_label": ".analyze()"
     },
     {
@@ -3920,6 +3975,336 @@
       "community": 23,
       "community_name": "Service",
       "norm_label": ".assignschedule()"
+    },
+    {
+      "label": "mcpserver/client.go",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_client",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "mcpserver/client.go"
+    },
+    {
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L27",
+      "_origin": "ast",
+      "id": "mcpserver_client",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "client"
+    },
+    {
+      "label": "Mutex",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_client_go_mutex",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "mutex"
+    },
+    {
+      "label": "NewClient()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_client_newclient",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "newclient()"
+    },
+    {
+      "label": ".login()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "mcpserver_client_login",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": ".login()"
+    },
+    {
+      "label": ".get()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L75",
+      "_origin": "ast",
+      "id": "mcpserver_client_get",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": ".get()"
+    },
+    {
+      "label": "Values",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "values",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": "values"
+    },
+    {
+      "label": ".do()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "mcpserver_client_do",
+      "community": 30,
+      "community_name": ".ImportCSV",
+      "norm_label": ".do()"
+    },
+    {
+      "label": "tools.go",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "tools.go"
+    },
+    {
+      "label": "New()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_new",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "new()"
+    },
+    {
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_go_client",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "client"
+    },
+    {
+      "label": "Server",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "server",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "server"
+    },
+    {
+      "label": "textResult()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L38",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_textresult",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "textresult()"
+    },
+    {
+      "label": "CallToolResult",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast",
+      "id": "calltoolresult",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "calltoolresult"
+    },
+    {
+      "label": "errResult()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L48",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_errresult",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "errresult()"
+    },
+    {
+      "label": "todayInput",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L57",
+      "_origin": "ast",
+      "id": "mcpserver_todayinput",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "todayinput"
+    },
+    {
+      "label": "attendanceInput",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "mcpserver_attendanceinput",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "attendanceinput"
+    },
+    {
+      "label": "registerAttendanceTools()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L67",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_registerattendancetools",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "registerattendancetools()"
+    },
+    {
+      "label": "resolveRange()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L132",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_resolverange",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "resolverange()"
+    },
+    {
+      "label": "leaveInput",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L160",
+      "_origin": "ast",
+      "id": "mcpserver_leaveinput",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "leaveinput"
+    },
+    {
+      "label": "balanceInput",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L165",
+      "_origin": "ast",
+      "id": "mcpserver_balanceinput",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "balanceinput"
+    },
+    {
+      "label": "registerLeaveTools()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L170",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_registerleavetools",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "registerleavetools()"
+    },
+    {
+      "label": "employeesInput",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L241",
+      "_origin": "ast",
+      "id": "mcpserver_employeesinput",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "employeesinput"
+    },
+    {
+      "label": "emptyInput",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L247",
+      "_origin": "ast",
+      "id": "mcpserver_emptyinput",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "emptyinput"
+    },
+    {
+      "label": "employee",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L249",
+      "_origin": "ast",
+      "id": "mcpserver_employee",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "employee"
+    },
+    {
+      "label": "registerPeopleTools()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L260",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_registerpeopletools",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "registerpeopletools()"
+    },
+    {
+      "label": "listEmployees()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L360",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_listemployees",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "listemployees()"
+    },
+    {
+      "label": "findEmployee()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L373",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_findemployee",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "findemployee()"
+    },
+    {
+      "label": "departmentIDByName()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L407",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_departmentidbyname",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "departmentidbyname()"
+    },
+    {
+      "label": "lookups()",
+      "file_type": "code",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L429",
+      "_origin": "ast",
+      "id": "api_internal_mcpserver_tools_lookups",
+      "community": 103,
+      "community_name": "tools.go",
+      "norm_label": "lookups()"
     },
     {
       "label": "auth.go",
@@ -4728,8 +5113,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "face_app_face_engine_faceengine",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "faceengine"
     },
     {
@@ -4739,8 +5124,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "face_app_face_engine_faceengine_init",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": ".__init__()"
     },
     {
@@ -4783,8 +5168,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "face_app_liveness",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "liveness.py"
     },
     {
@@ -4794,8 +5179,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "face_app_liveness_livenessdetector",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "livenessdetector"
     },
     {
@@ -4805,8 +5190,8 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "face_app_liveness_livenessdetector_init",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": ".__init__()"
     },
     {
@@ -4816,8 +5201,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "face_app_liveness_py_path",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "path"
     },
     {
@@ -4827,8 +5212,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "face_app_liveness_livenessdetector_score",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": ".score()"
     },
     {
@@ -4838,8 +5223,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "face_app_liveness_py_ndarray",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "ndarray"
     },
     {
@@ -4849,8 +5234,8 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "face_app_liveness_crop",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "_crop()"
     },
     {
@@ -4860,8 +5245,8 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "face_app_liveness_softmax",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "_softmax()"
     },
     {
@@ -4871,8 +5256,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "face_app_liveness_rationale_1",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "passive liveness (anti-spoof), minifasnet ensemble.  mirrors the upstream infere"
     },
     {
@@ -4882,8 +5267,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "face_app_liveness_rationale_46",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "real-face probability in [0, 1] for the face at bbox (x, y, w, h)."
     },
     {
@@ -4893,8 +5278,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "face_app_liveness_rationale_63",
-      "community": 103,
-      "community_name": "liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "upstream cropimage: expand the box by `scale` about its centre, clamped     to t"
     },
     {
@@ -4904,8 +5289,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "face_app_main",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "main.py"
     },
     {
@@ -4915,8 +5300,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "on_event",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "on_event"
     },
     {
@@ -4926,8 +5311,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "face_app_main_load_models",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "load_models()"
     },
     {
@@ -4937,8 +5322,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "get",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "get"
     },
     {
@@ -4948,8 +5333,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "face_app_main_healthz",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "healthz()"
     },
     {
@@ -4959,8 +5344,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "face_app_main_analyze",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "analyze()"
     },
     {
@@ -4970,8 +5355,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "request",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "request"
     },
     {
@@ -4981,8 +5366,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "jsonresponse",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "jsonresponse"
     },
     {
@@ -4992,8 +5377,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "face_app_main_rationale_1",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "internal face service. binds to 127.0.0.1 only -- never exposed publicly (see do"
     },
     {
@@ -5178,8 +5563,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_e2e_benchmark_accuracy",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "benchmark_accuracy.py"
     },
     {
@@ -5189,8 +5574,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "test_e2e_benchmark_accuracy_to_bgr",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "to_bgr()"
     },
     {
@@ -5200,8 +5585,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "test_e2e_benchmark_accuracy_py_ndarray",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "ndarray"
     },
     {
@@ -5211,8 +5596,8 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "test_e2e_benchmark_accuracy_main",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "main()"
     },
     {
@@ -5222,8 +5607,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_e2e_benchmark_accuracy_rationale_1",
-      "community": 104,
-      "community_name": "FaceEngine",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "measures far/frr of the real arcface pipeline against docs/prd.md section 3.  ru"
     },
     {
@@ -5233,8 +5618,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_e2e_benchmark_liveness",
-      "community": 108,
-      "community_name": "benchmark_liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "benchmark_liveness.py"
     },
     {
@@ -5244,8 +5629,8 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "test_e2e_benchmark_liveness_to_bgr",
-      "community": 108,
-      "community_name": "benchmark_liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "to_bgr()"
     },
     {
@@ -5255,8 +5640,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "test_e2e_benchmark_liveness_py_ndarray",
-      "community": 108,
-      "community_name": "benchmark_liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "ndarray"
     },
     {
@@ -5266,8 +5651,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "test_e2e_benchmark_liveness_main",
-      "community": 108,
-      "community_name": "benchmark_liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "main()"
     },
     {
@@ -5277,8 +5662,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_e2e_benchmark_liveness_rationale_1",
-      "community": 108,
-      "community_name": "benchmark_liveness.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "measures anti-spoof accuracy against docs/prd.md section 3 (>95% spoof caught)."
     },
     {
@@ -5772,8 +6157,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_e2e_test_challenge",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "test_challenge.py"
     },
     {
@@ -5783,8 +6168,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_check",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "check()"
     },
     {
@@ -5794,8 +6179,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_post",
-      "community": 105,
-      "community_name": "main.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "post()"
     },
     {
@@ -5805,8 +6190,8 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_frames_multipart",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "frames_multipart()"
     },
     {
@@ -5816,8 +6201,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_jpeg_bytes",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "jpeg_bytes()"
     },
     {
@@ -5827,8 +6212,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "image",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "image"
     },
     {
@@ -5838,8 +6223,8 @@
       "source_location": "L76",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_shifted",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "shifted()"
     },
     {
@@ -5849,8 +6234,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_rationale_1",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "verifies the movement challenge (docs/prd.md f5) against the real stack.  the pr"
     },
     {
@@ -5860,8 +6245,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "test_e2e_test_challenge_rationale_77",
-      "community": 106,
-      "community_name": "test_challenge.py",
+      "community": 2,
+      "community_name": "face_engine.py",
       "norm_label": "simulates a person moving slightly between frames."
     },
     {
@@ -6039,6 +6424,116 @@
       "community": 94,
       "community_name": "test_leave.py",
       "norm_label": "most recent date (<= d) with the given python weekday (mon=0..sun=6)."
+    },
+    {
+      "label": "test_mcp.py",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": "test_mcp.py"
+    },
+    {
+      "label": "check()",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_check",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": "check()"
+    },
+    {
+      "label": "MCP",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_mcp",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": "mcp"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_mcp_init",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".send()",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_mcp_send",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": ".send()"
+    },
+    {
+      "label": ".stderr()",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_mcp_stderr",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": ".stderr()"
+    },
+    {
+      "label": ".close()",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L68",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_mcp_close",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": ".close()"
+    },
+    {
+      "label": "call_tool()",
+      "file_type": "code",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_call_tool",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": "call_tool()"
+    },
+    {
+      "label": "Drives the MCP server over stdio the way an AI client does: real JSON-RPC on std",
+      "file_type": "rationale",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_rationale_1",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": "drives the mcp server over stdio the way an ai client does: real json-rpc on std"
+    },
+    {
+      "label": "Minimal MCP stdio client: newline-delimited JSON-RPC 2.0.",
+      "file_type": "rationale",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "test_e2e_test_mcp_rationale_31",
+      "community": 105,
+      "community_name": "MCP",
+      "norm_label": "minimal mcp stdio client: newline-delimited json-rpc 2.0."
     },
     {
       "label": "package.json",
@@ -13700,7 +14195,7 @@
       "label": "Coba sendiri (satu perintah)",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L14",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "readme_coba_sendiri_satu_perintah",
       "community": 121,
@@ -13711,7 +14206,7 @@
       "label": "Development",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "readme_development",
       "community": 121,
@@ -13722,7 +14217,7 @@
       "label": "Deploy ke VPS",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L61",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "readme_deploy_ke_vps",
       "community": 121,
@@ -13733,7 +14228,7 @@
       "label": "Status",
       "file_type": "document",
       "source_file": "README.md",
-      "source_location": "L71",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "readme_status",
       "community": 121,
@@ -16271,6 +16766,116 @@
       "norm_label": "block 4: craftsmanship & quality locks"
     },
     {
+      "label": "MCP.md",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_mcp",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "mcp.md"
+    },
+    {
+      "label": "MCP Server \u2014 HRIS Face Attendance",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "docs_mcp_mcp_server_hris_face_attendance",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "mcp server \u2014 hris face attendance"
+    },
+    {
+      "label": "Sifatnya: hanya membaca",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "docs_mcp_sifatnya_hanya_membaca",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "sifatnya: hanya membaca"
+    },
+    {
+      "label": "Build",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "docs_mcp_build",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "build"
+    },
+    {
+      "label": "Konfigurasi",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "docs_mcp_konfigurasi",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "konfigurasi"
+    },
+    {
+      "label": "Claude Code",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "docs_mcp_claude_code",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "claude code"
+    },
+    {
+      "label": "Claude Desktop",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "docs_mcp_claude_desktop",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "claude desktop"
+    },
+    {
+      "label": "Tool yang tersedia",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "docs_mcp_tool_yang_tersedia",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "tool yang tersedia"
+    },
+    {
+      "label": "Catatan operasional",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L91",
+      "_origin": "ast",
+      "id": "docs_mcp_catatan_operasional",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "catatan operasional"
+    },
+    {
+      "label": "Tes",
+      "file_type": "document",
+      "source_file": "docs/MCP.md",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "docs_mcp_tes",
+      "community": 104,
+      "community_name": "MCP Server \u2014 HRIS Face Attendance",
+      "norm_label": "tes"
+    },
+    {
       "label": "PRD.md",
       "file_type": "document",
       "source_file": "docs/PRD.md",
@@ -17936,6 +18541,52 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L54",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_cmd_mcp_main",
+      "target": "api_cmd_mcp_main_envor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_cmd_mcp_main",
+      "target": "api_cmd_mcp_main_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_cmd_mcp_main_main",
+      "target": "api_cmd_mcp_main_envor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "api/cmd/mcp/main.go",
+      "source_location": "L40",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_cmd_mcp_main_main",
+      "target": "api_internal_mcpserver_client_newclient"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "api/cmd/seed/main.go",
       "source_location": "L22",
       "weight": 1.0,
@@ -18632,6 +19283,18 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "api/internal/attendance/service.go",
+      "source_location": "L40",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast",
+      "source": "api_internal_attendance_service_go_attendance_service",
+      "target": "api_internal_attendance_service_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/attendance/service.go",
       "source_location": "L42",
       "weight": 1.0,
       "context": "field",
@@ -18788,18 +19451,6 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "api/internal/attendance/service.go",
-      "source_location": "L40",
-      "weight": 1.0,
-      "context": "field",
-      "_origin": "ast",
-      "source": "api_internal_attendance_service_go_attendance_service",
-      "target": "faceclient_client",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "api/internal/attendance/service.go",
       "source_location": "L41",
       "weight": 1.0,
       "context": "field",
@@ -18841,7 +19492,7 @@
       "context": "parameter_type",
       "_origin": "ast",
       "source": "api_internal_attendance_service_newservice",
-      "target": "api_internal_attendance_service_go_location",
+      "target": "api_internal_attendance_service_go_client",
       "confidence_score": 1.0
     },
     {
@@ -18853,7 +19504,7 @@
       "context": "parameter_type",
       "_origin": "ast",
       "source": "api_internal_attendance_service_newservice",
-      "target": "faceclient_client",
+      "target": "api_internal_attendance_service_go_location",
       "confidence_score": 1.0
     },
     {
@@ -20086,6 +20737,18 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "api/internal/auth/throttle.go",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast",
+      "source": "auth_throttle",
+      "target": "api_internal_auth_throttle_go_mutex",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/auth/throttle.go",
       "source_location": "L17",
       "weight": 1.0,
       "context": "field",
@@ -20136,18 +20799,6 @@
       "_origin": "ast",
       "source": "auth_throttle",
       "target": "auth_throttle_reset",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "api/internal/auth/throttle.go",
-      "source_location": "L16",
-      "weight": 1.0,
-      "context": "field",
-      "_origin": "ast",
-      "source": "auth_throttle",
-      "target": "mutex",
       "confidence_score": 1.0
     },
     {
@@ -22135,7 +22786,7 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "employee_service_importcsv",
-      "target": "get"
+      "target": "mcpserver_client_get"
     },
     {
       "relation": "references",
@@ -22961,6 +23612,18 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "api/internal/enrollment/service.go",
+      "source_location": "L50",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast",
+      "source": "enrollment_service",
+      "target": "api_internal_enrollment_service_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/enrollment/service.go",
       "source_location": "L49",
       "weight": 1.0,
       "context": "field",
@@ -23017,18 +23680,6 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "api/internal/enrollment/service.go",
-      "source_location": "L50",
-      "weight": 1.0,
-      "context": "field",
-      "_origin": "ast",
-      "source": "enrollment_service",
-      "target": "faceclient_client",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "source_file": "api/internal/enrollment/service.go",
       "source_location": "L53",
       "weight": 1.0,
       "context": "parameter_type",
@@ -23046,7 +23697,7 @@
       "context": "parameter_type",
       "_origin": "ast",
       "source": "api_internal_enrollment_service_newservice",
-      "target": "faceclient_client",
+      "target": "api_internal_enrollment_service_go_client",
       "confidence_score": 1.0
     },
     {
@@ -25010,6 +25661,715 @@
       "_origin": "ast",
       "source": "masterdata_service_listlocations",
       "target": "masterdata_location",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_client",
+      "target": "api_internal_mcpserver_client_newclient",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L27",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_client",
+      "target": "mcpserver_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L37",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_client_newclient",
+      "target": "mcpserver_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L33",
+      "weight": 1.0,
+      "context": "field",
+      "_origin": "ast",
+      "source": "mcpserver_client",
+      "target": "api_internal_mcpserver_client_go_mutex",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "mcpserver_client",
+      "target": "mcpserver_client_do",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L75",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "mcpserver_client",
+      "target": "mcpserver_client_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "mcpserver_client",
+      "target": "mcpserver_client_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L80",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "mcpserver_client_get",
+      "target": "mcpserver_client_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L85",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "mcpserver_client_get",
+      "target": "mcpserver_client_do",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L75",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "mcpserver_client_get",
+      "target": "values",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/client.go",
+      "source_location": "L109",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "mcpserver_client_do",
+      "target": "values",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L407",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_departmentidbyname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_errresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L373",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_findemployee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L360",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_listemployees",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L429",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_lookups",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_new",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_registerattendancetools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L170",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_registerleavetools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L260",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_registerpeopletools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L132",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_resolverange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L38",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "api_internal_mcpserver_tools_textresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_attendanceinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L165",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_balanceinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L249",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_employee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L241",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_employeesinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L247",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_emptyinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L160",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_leaveinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools",
+      "target": "mcpserver_todayinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_new",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_new",
+      "target": "api_internal_mcpserver_tools_registerattendancetools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_new",
+      "target": "api_internal_mcpserver_tools_registerleavetools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_new",
+      "target": "api_internal_mcpserver_tools_registerpeopletools",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_new",
+      "target": "server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L407",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_departmentidbyname",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L373",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_findemployee",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L360",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_listemployees",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L429",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_lookups",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L67",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerattendancetools",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L170",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerleavetools",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L260",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "api_internal_mcpserver_tools_go_client",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L67",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerattendancetools",
+      "target": "server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L170",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerleavetools",
+      "target": "server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L260",
+      "weight": 1.0,
+      "context": "parameter_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "server",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L78",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerattendancetools",
+      "target": "api_internal_mcpserver_tools_textresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L189",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerleavetools",
+      "target": "api_internal_mcpserver_tools_textresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L308",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "api_internal_mcpserver_tools_textresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L38",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_textresult",
+      "target": "calltoolresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L48",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_errresult",
+      "target": "calltoolresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerattendancetools",
+      "target": "api_internal_mcpserver_tools_errresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L187",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerleavetools",
+      "target": "api_internal_mcpserver_tools_errresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L268",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "api_internal_mcpserver_tools_errresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerattendancetools",
+      "target": "api_internal_mcpserver_tools_departmentidbyname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L89",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerattendancetools",
+      "target": "api_internal_mcpserver_tools_resolverange",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L197",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerleavetools",
+      "target": "api_internal_mcpserver_tools_findemployee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L373",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_findemployee",
+      "target": "mcpserver_employee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L360",
+      "weight": 1.0,
+      "context": "return_type",
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_listemployees",
+      "target": "mcpserver_employee",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L277",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "api_internal_mcpserver_tools_departmentidbyname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L266",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "api_internal_mcpserver_tools_listemployees",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L270",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_registerpeopletools",
+      "target": "api_internal_mcpserver_tools_lookups",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "api/internal/mcpserver/tools.go",
+      "source_location": "L374",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "api_internal_mcpserver_tools_findemployee",
+      "target": "api_internal_mcpserver_tools_listemployees",
       "confidence_score": 1.0
     },
     {
@@ -28065,6 +29425,129 @@
       "_origin": "ast",
       "source": "test_e2e_test_leave_rationale_46",
       "target": "test_e2e_test_leave_prev_weekday",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L76",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp",
+      "target": "test_e2e_test_mcp_call_tool",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp",
+      "target": "test_e2e_test_mcp_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp",
+      "target": "test_e2e_test_mcp_mcp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_rationale_1",
+      "target": "test_e2e_test_mcp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_mcp",
+      "target": "test_e2e_test_mcp_mcp_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_mcp",
+      "target": "test_e2e_test_mcp_mcp_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_mcp",
+      "target": "test_e2e_test_mcp_mcp_send",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_mcp",
+      "target": "test_e2e_test_mcp_mcp_stderr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_rationale_31",
+      "target": "test_e2e_test_mcp_mcp",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_call_tool",
+      "target": "test_e2e_test_mcp_mcp_send",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "test/e2e/test_mcp.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "test_e2e_test_mcp_mcp_send",
+      "target": "test_e2e_test_mcp_mcp_stderr",
       "confidence_score": 1.0
     },
     {
@@ -38268,7 +39751,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L45",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
       "source": "readme",
@@ -38290,7 +39773,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "readme_hris_absensi_face_recognition",
@@ -38301,7 +39784,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L61",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "readme_hris_absensi_face_recognition",
@@ -38312,7 +39795,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L29",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "readme_hris_absensi_face_recognition",
@@ -38323,7 +39806,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "README.md",
-      "source_location": "L71",
+      "source_location": "L72",
       "weight": 1.0,
       "_origin": "ast",
       "source": "readme_hris_absensi_face_recognition",
@@ -40808,6 +42291,105 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp",
+      "target": "docs_mcp_mcp_server_hris_face_attendance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_mcp_server_hris_face_attendance",
+      "target": "docs_mcp_build",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L91",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_mcp_server_hris_face_attendance",
+      "target": "docs_mcp_catatan_operasional",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_mcp_server_hris_face_attendance",
+      "target": "docs_mcp_konfigurasi",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_mcp_server_hris_face_attendance",
+      "target": "docs_mcp_sifatnya_hanya_membaca",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L105",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_mcp_server_hris_face_attendance",
+      "target": "docs_mcp_tes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_mcp_server_hris_face_attendance",
+      "target": "docs_mcp_tool_yang_tersedia",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_konfigurasi",
+      "target": "docs_mcp_claude_code",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/MCP.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "docs_mcp_konfigurasi",
+      "target": "docs_mcp_claude_desktop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/PRD.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -41445,5 +43027,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "bb844ef1ab556fd048c3d4d523c5e164dda8411b"
+  "built_at_commit": "47ce7c1f3bab17e33076088b84325cf62e0aa178"
 }

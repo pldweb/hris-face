@@ -1,16 +1,16 @@
 # Graph Report - hris-face  (2026-09-08)
 
 ## Corpus Check
-- 129 files · ~105,927 words
+- 134 files · ~109,737 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1537 nodes · 2150 edges · 128 communities (111 shown, 17 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 26 edges (avg confidence: 0.71)
+- 1592 nodes · 2235 edges · 126 communities (109 shown, 17 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bb844ef1`
+- Built from commit: `47ce7c1f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -112,17 +112,15 @@
 - Structural & Flow
 - 0004_leave_requests.up.sql
 - 0004_leave_requests.down.sql
-- liveness.py
-- FaceEngine
-- main.py
-- test_challenge.py
+- tools.go
+- MCP Server — HRIS Face Attendance
+- MCP
+- faceclient/client.go
 - test_all_pages.js
-- benchmark_liveness.py
 - seed_demo.py
 - ProfileModal.vue
 - masterdata.ts
 - InlineMasterSelect.vue
-- RegisterRoutes
 - 10. Arah Desain Frontend
 - 7. Kebutuhan Fungsional
 - load
@@ -151,21 +149,21 @@
 10. `RegisterRoutes()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `main()` --calls--> `FaceEngine`  [EXTRACTED]
-  test/e2e/benchmark_liveness.py → face/app/face_engine.py
-- `main()` --calls--> `LivenessDetector`  [EXTRACTED]
-  test/e2e/benchmark_liveness.py → face/app/liveness.py
 - `main()` --calls--> `NewPhotoStore()`  [INFERRED]
   api/cmd/api/main.go → api/internal/attendance/photostore.go
 - `main()` --calls--> `Migrate()`  [INFERRED]
   api/cmd/api/main.go → api/internal/db/migrate.go
 - `RegisterRoutes()` --calls--> `RequireRole()`  [INFERRED]
-  api/internal/correction/handler.go → api/internal/middleware/auth.go
+  api/internal/employee/handler.go → api/internal/middleware/auth.go
+- `RegisterRoutes()` --calls--> `RequireRole()`  [INFERRED]
+  api/internal/leave/handler.go → api/internal/middleware/auth.go
+- `RegisterRoutes()` --calls--> `RequireRole()`  [INFERRED]
+  api/internal/masterdata/handler.go → api/internal/middleware/auth.go
 
 ## Import Cycles
 - None detected.
 
-## Communities (128 total, 17 thin omitted)
+## Communities (126 total, 17 thin omitted)
 
 ### Community 0 - "Enrollment.vue"
 Cohesion: 0.09
@@ -176,8 +174,8 @@ Cohesion: 0.05
 Nodes (40): @ant-design/icons-vue, ant-design-vue, axios, dayjs, @mediapipe/tasks-vision, pinia, @types/node, typescript (+32 more)
 
 ### Community 2 - "face_engine.py"
-Cohesion: 0.23
-Nodes (9): eye_openness(), face_signature(), ndarray, Eye openness, used for the blink challenge (docs/PRD.md F5).  Passive anti-spoof, Mean vertical eye opening as a fraction of face width.      Normalising by face, An 8x8 grayscale thumbnail of the face crop.      The blink challenge needs to p, DetectedFace, ndarray (+1 more)
+Cohesion: 0.05
+Nodes (40): eye_openness(), face_signature(), ndarray, Eye openness, used for the blink challenge (docs/PRD.md F5).  Passive anti-spoof, Mean vertical eye opening as a fraction of face width.      Normalising by face, An 8x8 grayscale thumbnail of the face crop.      The blink challenge needs to p, DetectedFace, FaceEngine (+32 more)
 
 ### Community 3 - "CheckIn.vue"
 Cohesion: 0.09
@@ -197,15 +195,15 @@ Nodes (7): auth, initials, pageTitle, profileOpen, route, router, selectedKeys
 
 ### Community 7 - "Service"
 Cohesion: 0.10
-Nodes (22): Service, Context, meanPairwiseVariation(), Duration, Time, NewPhotoStore(), TestPhotoStoreDisabled(), TestPhotoStoreRetention() (+14 more)
+Nodes (23): Service, Context, meanPairwiseVariation(), Duration, Time, NewPhotoStore(), TestPhotoStoreDisabled(), TestPhotoStoreRetention() (+15 more)
 
 ### Community 8 - "MasterData.vue"
 Cohesion: 0.07
 Nodes (28): deleteDepartment(), approveDevice(), deleteLocation(), DAY_LABELS, deletingDepartmentId, deletingLocationId, departmentForm, departmentModal (+20 more)
 
 ### Community 9 - "main"
-Cohesion: 0.07
-Nodes (34): main(), main(), mustEnv(), challengeHandler(), HandlerFunc, IRoutes, Service, markHandler() (+26 more)
+Cohesion: 0.06
+Nodes (44): main(), main(), mustEnv(), challengeHandler(), HandlerFunc, IRoutes, Service, markHandler() (+36 more)
 
 ### Community 10 - "Monitoring.vue"
 Cohesion: 0.08
@@ -228,8 +226,8 @@ Cohesion: 0.13
 Nodes (15): createDepartment(), createEmployee(), CreateEmployeeInput, CreateEmployeeResult, Department, Employee, EmployeeStatus, ImportResult (+7 more)
 
 ### Community 15 - "Service"
-Cohesion: 0.20
-Nodes (9): Context, Pool, NewService(), New(), PhotoRejection, RejectedError, Service, AnalyzeResult (+1 more)
+Cohesion: 0.27
+Nodes (7): Client, Context, Pool, NewService(), PhotoRejection, RejectedError, Service
 
 ### Community 16 - "report/handler.go"
 Cohesion: 0.34
@@ -281,15 +279,15 @@ Nodes (12): 12. Risiko Produk, 13. Rencana Rilis, 14. Pertanyaan Terbuka, 1. Rin
 
 ### Community 28 - "throttle"
 Cohesion: 0.29
-Nodes (6): Duration, Time, newThrottle(), attemptRecord, throttle, Mutex
+Nodes (6): Duration, Mutex, Time, newThrottle(), attemptRecord, throttle
 
 ### Community 29 - "employees"
 Cohesion: 0.40
 Nodes (10): attendance_corrections, attendances, audit_logs, departments, devices, employees, face_embeddings, users (+2 more)
 
 ### Community 30 - ".ImportCSV"
-Cohesion: 0.33
-Nodes (6): Context, Service, mapHeader(), ImportResult, ImportRow, Reader
+Cohesion: 0.15
+Nodes (12): envOr(), main(), Context, Service, mapHeader(), Mutex, NewClient(), ImportResult (+4 more)
 
 ### Community 31 - "run-local.sh"
 Cohesion: 0.25
@@ -503,29 +501,25 @@ Nodes (4): Design Read (how the dials are set), Levers (how the dials become vis
 Cohesion: 0.50
 Nodes (4): Dead Navigation, Non-Functional Controls, Sections That Fill a Template, Structural & Flow
 
-### Community 103 - "liveness.py"
-Cohesion: 0.25
-Nodes (8): _crop(), LivenessDetector, ndarray, Path, Passive liveness (anti-spoof), MiniFASNet ensemble.  Mirrors the upstream infere, Real-face probability in [0, 1] for the face at bbox (x, y, w, h)., Upstream CropImage: expand the box by `scale` about its centre, clamped     to t, _softmax()
+### Community 103 - "tools.go"
+Cohesion: 0.22
+Nodes (21): departmentIDByName(), errResult(), findEmployee(), Client, listEmployees(), lookups(), New(), registerAttendanceTools() (+13 more)
 
-### Community 104 - "FaceEngine"
-Cohesion: 0.25
-Nodes (7): FaceEngine, load_models(), on_event, main(), ndarray, Measures FAR/FRR of the real ArcFace pipeline against docs/PRD.md section 3.  Ru, to_bgr()
+### Community 104 - "MCP Server — HRIS Face Attendance"
+Cohesion: 0.20
+Nodes (9): Build, Catatan operasional, Claude Code, Claude Desktop, Konfigurasi, MCP Server — HRIS Face Attendance, Sifatnya: hanya membaca, Tes (+1 more)
 
-### Community 105 - "main.py"
-Cohesion: 0.25
-Nodes (7): analyze(), healthz(), Internal face service. Binds to 127.0.0.1 only -- never exposed publicly (see do, get, JSONResponse, Request, post()
+### Community 105 - "MCP"
+Cohesion: 0.24
+Nodes (4): call_tool(), MCP, Drives the MCP server over stdio the way an AI client does: real JSON-RPC on std, Minimal MCP stdio client: newline-delimited JSON-RPC 2.0.
 
-### Community 106 - "test_challenge.py"
-Cohesion: 0.29
-Nodes (5): Image, jpeg_bytes(), Verifies the movement challenge (docs/PRD.md F5) against the real stack.  The pr, Simulates a person moving slightly between frames., shifted()
+### Community 106 - "faceclient/client.go"
+Cohesion: 0.60
+Nodes (3): New(), AnalyzeResult, Client
 
 ### Community 107 - "test_all_pages.js"
 Cohesion: 0.29
 Nodes (4): check(), { chromium }, HR, visit()
-
-### Community 108 - "benchmark_liveness.py"
-Cohesion: 0.40
-Nodes (4): main(), ndarray, Measures anti-spoof accuracy against docs/PRD.md section 3 (>95% spoof caught)., to_bgr()
 
 ### Community 109 - "seed_demo.py"
 Cohesion: 0.40
@@ -542,10 +536,6 @@ Nodes (11): createLocation(), createSchedule(), Device, listDevices(), Location,
 ### Community 112 - "InlineMasterSelect.vue"
 Cohesion: 0.20
 Nodes (9): busy, cancel(), draft, emit, Mode, model, props, save() (+1 more)
-
-### Community 113 - "RegisterRoutes"
-Cohesion: 0.38
-Nodes (10): createHandler(), HandlerFunc, IRoutes, Service, listHandler(), myListHandler(), RegisterRoutes(), reviewHandler() (+2 more)
 
 ### Community 114 - "10. Arah Desain Frontend"
 Cohesion: 0.22
@@ -588,24 +578,24 @@ Cohesion: 0.50
 Nodes (4): 6.1 Enrollment (pendaftaran wajah), 6.2 Check-in / Check-out, 6.3 Koreksi, 6. Alur Utama
 
 ## Knowledge Gaps
-- **716 isolated node(s):** `github.com/hris-face/api`, `Service`, `loginRequest`, `createRequest`, `reviewRequest` (+711 more)
+- **729 isolated node(s):** `github.com/hris-face/api`, `Service`, `loginRequest`, `createRequest`, `reviewRequest` (+724 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RequireRole()` connect `main` to `leave/handler.go`, `report/handler.go`, `RegisterRoutes`, `employee/handler.go`, `RegisterRoutes`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `RequireRole()` connect `main` to `report/handler.go`, `employee/handler.go`, `leave/handler.go`, `RegisterRoutes`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
 - **Why does `main()` connect `main` to `Service`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **What connects `github.com/hris-face/api`, `Service`, `loginRequest` to the rest of the system?**
-  _716 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _729 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Enrollment.vue` be split into smaller, more focused modules?**
   _Cohesion score 0.09 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
+- **Should `face_engine.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.05152394775036284 - nodes in this community are weakly interconnected._
 - **Should `CheckIn.vue` be split into smaller, more focused modules?**
   _Cohesion score 0.09113300492610837 - nodes in this community are weakly interconnected._
-- **Should `MyHistory.vue` be split into smaller, more focused modules?**
-  _Cohesion score 0.14705882352941177 - nodes in this community are weakly interconnected._

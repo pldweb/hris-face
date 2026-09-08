@@ -10,9 +10,9 @@
     "semantic_hash": ""
   },
   "api/go.mod": {
-    "mtime": 1788785896.0345368,
-    "ast_hash": "116c7ea59ec15aa8913da3bac39f7ebf",
-    "semantic_hash": "116c7ea59ec15aa8913da3bac39f7ebf"
+    "mtime": 1788844162.5203362,
+    "ast_hash": "8cc339fa1c74c270c3c8137e6d0f2a76",
+    "semantic_hash": ""
   },
   "api/internal/attendance/challenge.go": {
     "mtime": 1788787276.892852,
@@ -430,8 +430,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1788787662.1892664,
-    "ast_hash": "6bf9eadd031f2d8dce6fcf595830aa75",
+    "mtime": 1788844337.5797374,
+    "ast_hash": "eab9292f467d5a13fa6dd2f7e5e7a33f",
     "semantic_hash": ""
   },
   "docs/PRD.md": {
@@ -662,6 +662,31 @@
   "web/src/views/admin/InlineMasterSelect.vue": {
     "mtime": 1788836765.7851264,
     "ast_hash": "dcd1fedb9e126ae59bb4fad4bfc85eb8",
+    "semantic_hash": ""
+  },
+  "api/cmd/mcp/main.go": {
+    "mtime": 1788844145.8631356,
+    "ast_hash": "f2b83daa6ed3b793e666599940cf17d8",
+    "semantic_hash": ""
+  },
+  "api/internal/mcpserver/client.go": {
+    "mtime": 1788844073.0420656,
+    "ast_hash": "11761b2d36605a37900d939fb2a54076",
+    "semantic_hash": ""
+  },
+  "api/internal/mcpserver/tools.go": {
+    "mtime": 1788844152.5234177,
+    "ast_hash": "3bb79ad92997441455823d417e88ea3b",
+    "semantic_hash": ""
+  },
+  "test/e2e/test_mcp.py": {
+    "mtime": 1788844275.299331,
+    "ast_hash": "b8cb36518ddb0b7978d9c9d53e31f894",
+    "semantic_hash": ""
+  },
+  "docs/MCP.md": {
+    "mtime": 1788844321.511642,
+    "ast_hash": "bc2cb86dd79d6798a507656ddc3a8464",
     "semantic_hash": ""
   }
 }
