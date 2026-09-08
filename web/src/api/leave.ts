@@ -59,3 +59,11 @@ export async function decideLeaveRequest(id: string, decision: 'approve' | 'reje
   const { data } = await apiClient.patch(`/admin/leave-requests/${id}`, { decision, note })
   return data as LeaveRequest
 }
+
+export async function updateLeaveRequest(
+  id: string,
+  input: { type: LeaveType; start_date: string; end_date: string; reason: string },
+): Promise<LeaveRequest> {
+  const { data } = await apiClient.put(`/admin/leave-requests/${id}`, input)
+  return data
+}

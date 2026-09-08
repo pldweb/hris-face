@@ -9,16 +9,27 @@ import {
   importEmployeesCsv,
   listDepartments,
   listEmployees,
+  updateDepartment,
   updateEmployee,
   type Department,
   type Employee,
+  type EmployeeStatus,
   type ImportResult,
 } from '../../api/employee'
-import { listLocations, type Location } from '../../api/masterdata'
+import {
+  createLocation,
+  listLocations,
+  listSchedules,
+  updateLocation,
+  type Location,
+  type Schedule,
+} from '../../api/masterdata'
+import InlineMasterSelect from './InlineMasterSelect.vue'
 
 const employees = ref<Employee[]>([])
 const departments = ref<Department[]>([])
 const locations = ref<Location[]>([])
+const schedules = ref<Schedule[]>([])
 const loading = ref(true)
 const modalOpen = ref(false)
 const submitting = ref(false)
@@ -33,9 +44,16 @@ const form = ref({
   email: '',
   department_id: undefined as string | undefined,
   location_id: undefined as string | undefined,
+  schedule_id: undefined as string | undefined,
+  manager_id: undefined as string | undefined,
+  annual_leave_quota: 12,
+  status: 'pending_enrollment' as EmployeeStatus,
 })
-const newDeptName = ref('')
-const creatingDept = ref(false)
+
+// Resetting someone's password is a separate, deliberate act, so it stays
+// collapsed: an ordinary edit must not silently reissue their credentials.
+const resetPassword = ref(false)
+const newPassword = ref('')
 
 const tempPasswordResult = ref<{ name: string; password: string } | null>(null)
 const importResult = ref<ImportResult | null>(null)
@@ -66,6 +84,25 @@ function onPickCsv(file: File) {
 // render tripped an internal crash in rc-select's option memoization.
 const departmentOptions = computed(() => departments.value.map((d) => ({ label: d.name, value: d.id })))
 const locationOptions = computed(() => locations.value.map((l) => ({ label: l.name, value: l.id })))
+// Only append the hours when the schedule's own name does not already carry
+// them, otherwise a name like "Reguler 08:00-17:00" renders them twice.
+const scheduleOptions = computed(() =>
+  schedules.value.map((s) => ({
+    label: s.name.includes(s.start_time) ? s.name : `${s.name} (${s.start_time}-${s.end_time})`,
+    value: s.id,
+  })),
+)
+// An employee cannot manage themselves, so the one being edited is excluded.
+const managerOptions = computed(() =>
+  employees.value
+    .filter((e) => e.id !== editingId.value && e.status !== 'inactive')
+    .map((e) => ({ label: `${e.full_name} (${e.nik})`, value: e.id })),
+)
+const statusOptions = [
+  { label: 'Belum enrollment', value: 'pending_enrollment' },
+  { label: 'Aktif', value: 'active' },
+  { label: 'Nonaktif', value: 'inactive' },
+]
 
 const modalTitle = computed(() => (editingId.value ? 'Ubah Karyawan' : 'Tambah Karyawan'))
 
@@ -86,10 +123,11 @@ const statusMeta: Record<Employee['status'], { color: string; label: string }> =
 async function loadAll() {
   loading.value = true
   try {
-    ;[employees.value, departments.value, locations.value] = await Promise.all([
+    ;[employees.value, departments.value, locations.value, schedules.value] = await Promise.all([
       listEmployees(),
       listDepartments(),
       listLocations(),
+      listSchedules(),
     ])
   } catch {
     message.error('Gagal memuat data karyawan')
@@ -100,7 +138,14 @@ async function loadAll() {
 
 function openModal() {
   editingId.value = null
-  form.value = { nik: '', full_name: '', email: '', department_id: undefined, location_id: undefined }
+  form.value = {
+    nik: '', full_name: '', email: '',
+    department_id: undefined, location_id: undefined,
+    schedule_id: undefined, manager_id: undefined,
+    annual_leave_quota: 12, status: 'pending_enrollment',
+  }
+  resetPassword.value = false
+  newPassword.value = ''
   modalOpen.value = true
 }
 
@@ -112,7 +157,13 @@ function openEditModal(record: Employee) {
     email: record.email,
     department_id: record.department_id,
     location_id: record.location_id,
+    schedule_id: record.schedule_id,
+    manager_id: record.manager_id,
+    annual_leave_quota: record.annual_leave_quota ?? 12,
+    status: record.status,
   }
+  resetPassword.value = false
+  newPassword.value = ''
   modalOpen.value = true
 }
 
@@ -129,29 +180,37 @@ async function onDeactivate(record: Employee) {
   }
 }
 
-async function onCreateDepartment() {
-  if (!newDeptName.value.trim()) return
-  creatingDept.value = true
-  try {
-    const dept = await createDepartment(newDeptName.value.trim())
-    departments.value.push(dept)
-    form.value.department_id = dept.id
-    newDeptName.value = ''
-  } catch {
-    message.error('Gagal membuat departemen')
-  } finally {
-    creatingDept.value = false
-  }
+// The inline department/location editor changes master data behind the form,
+// so the option lists have to be refetched without disturbing what is typed.
+async function reloadMasterLists() {
+  ;[departments.value, locations.value] = await Promise.all([listDepartments(), listLocations()])
 }
 
 async function onSubmit() {
   submitting.value = true
   try {
     if (editingId.value) {
-      const { full_name, email, department_id, location_id } = form.value
-      await updateEmployee(editingId.value, { full_name, email, department_id, location_id })
+      const f = form.value
+      if (resetPassword.value && newPassword.value.length < 8) {
+        message.error('Password baru minimal 8 karakter')
+        return
+      }
+      await updateEmployee(editingId.value, {
+        nik: f.nik,
+        full_name: f.full_name,
+        email: f.email,
+        // '' rather than undefined: the API reads undefined as "leave alone"
+        // and '' as "clear", which is how a department can be removed at all.
+        department_id: f.department_id ?? '',
+        location_id: f.location_id ?? '',
+        schedule_id: f.schedule_id ?? '',
+        manager_id: f.manager_id ?? '',
+        annual_leave_quota: f.annual_leave_quota,
+        status: f.status,
+        ...(resetPassword.value ? { password: newPassword.value } : {}),
+      })
       modalOpen.value = false
-      message.success('Karyawan diperbarui')
+      message.success(resetPassword.value ? 'Karyawan diperbarui, password direset' : 'Karyawan diperbarui')
       await loadAll()
     } else {
       const result = await createEmployee(form.value)
@@ -224,39 +283,88 @@ onMounted(loadAll)
       </template>
     </a-table>
 
-    <a-modal v-model:open="modalOpen" :title="modalTitle" :confirm-loading="submitting" @ok="onSubmit">
+    <a-modal v-model:open="modalOpen" :title="modalTitle" width="620px" :confirm-loading="submitting" @ok="onSubmit">
       <a-form layout="vertical">
-        <a-form-item label="NIK">
-          <a-input v-model:value="form.nik" :disabled="!!editingId" />
-        </a-form-item>
-        <a-form-item label="Nama Lengkap">
-          <a-input v-model:value="form.full_name" />
-        </a-form-item>
+        <a-row :gutter="12">
+          <a-col :span="12">
+            <a-form-item label="NIK">
+              <a-input v-model:value="form.nik" placeholder="Nomor induk karyawan" />
+            </a-form-item>
+          </a-col>
+          <a-col :span="12">
+            <a-form-item label="Nama Lengkap">
+              <a-input v-model:value="form.full_name" placeholder="Nama lengkap" />
+            </a-form-item>
+          </a-col>
+        </a-row>
         <a-form-item label="Email">
-          <a-input v-model:value="form.email" type="email" />
+          <a-input v-model:value="form.email" type="email" placeholder="nama@perusahaan.com" />
         </a-form-item>
+
         <a-form-item label="Departemen">
-          <a-select
-            v-model:value="form.department_id"
+          <InlineMasterSelect
+            v-model="form.department_id"
             :options="departmentOptions"
-            allow-clear
             placeholder="Pilih departemen"
+            entity-label="departemen"
+            :create="createDepartment"
+            :update="updateDepartment"
+            @changed="reloadMasterLists"
           />
         </a-form-item>
-        <a-form-item label="Departemen baru (opsional)">
-          <a-space>
-            <a-input v-model:value="newDeptName" placeholder="Nama departemen" />
-            <a-button :loading="creatingDept" @click="onCreateDepartment">Tambah</a-button>
-          </a-space>
-        </a-form-item>
-        <a-form-item label="Lokasi">
-          <a-select
-            v-model:value="form.location_id"
+        <a-form-item label="Lokasi kerja">
+          <InlineMasterSelect
+            v-model="form.location_id"
             :options="locationOptions"
-            allow-clear
             placeholder="Pilih lokasi"
+            entity-label="lokasi"
+            :create="createLocation"
+            :update="updateLocation"
+            @changed="reloadMasterLists"
           />
         </a-form-item>
+
+        <template v-if="editingId">
+          <a-form-item label="Jadwal kerja">
+            <a-select
+              v-model:value="form.schedule_id"
+              :options="scheduleOptions"
+              allow-clear
+              placeholder="Pilih jadwal"
+            />
+          </a-form-item>
+          <a-row :gutter="12">
+            <a-col :span="12">
+              <a-form-item label="Atasan">
+                <a-select
+                  v-model:value="form.manager_id"
+                  :options="managerOptions"
+                  allow-clear
+                  show-search
+                  option-filter-prop="label"
+                  placeholder="Tanpa atasan"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="Status">
+                <a-select v-model:value="form.status" :options="statusOptions" />
+              </a-form-item>
+            </a-col>
+          </a-row>
+          <a-form-item label="Kuota cuti tahunan (hari)">
+            <a-input-number v-model:value="form.annual_leave_quota" :min="0" :max="60" style="width: 100%" />
+          </a-form-item>
+
+          <a-checkbox v-model:checked="resetPassword">Reset password karyawan</a-checkbox>
+          <a-form-item v-if="resetPassword" label="Password baru" class="pw-field">
+            <a-input-password v-model:value="newPassword" placeholder="Minimal 8 karakter" />
+            <p class="pw-hint">
+              Karyawan akan keluar dari semua perangkat dan harus login dengan password ini.
+              Sampaikan langsung, bukan lewat email tanpa enkripsi.
+            </p>
+          </a-form-item>
+        </template>
       </a-form>
     </a-modal>
 
@@ -339,6 +447,17 @@ onMounted(loadAll)
 
 .import-failed {
   margin-top: 16px;
+}
+
+.pw-field {
+  margin-top: 12px;
+}
+
+.pw-hint {
+  margin: 6px 0 0;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .temp-password {

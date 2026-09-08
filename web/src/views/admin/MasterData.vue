@@ -6,6 +6,13 @@ import { message } from 'ant-design-vue'
 import dayjs from '../../lib/dayjs'
 import { onMounted, ref } from 'vue'
 import {
+  createDepartment,
+  deleteDepartment,
+  listDepartments,
+  updateDepartment,
+  type Department,
+} from '../../api/employee'
+import {
   approveDevice,
   createLocation,
   createSchedule,
@@ -23,6 +30,7 @@ import {
 const schedules = ref<Schedule[]>([])
 const locations = ref<Location[]>([])
 const devices = ref<Device[]>([])
+const departments = ref<Department[]>([])
 const loading = ref(true)
 
 const scheduleModal = ref(false)
@@ -30,6 +38,13 @@ const editingId = ref<string | null>(null)
 const submitting = ref(false)
 const form = ref({ name: '', start_time: '08:00', end_time: '17:00', late_tolerance_minutes: 15 })
 const newLocation = ref('')
+
+const newDepartment = ref('')
+const departmentModal = ref(false)
+const editingDepartmentId = ref<string | null>(null)
+const departmentSubmitting = ref(false)
+const departmentForm = ref({ name: '' })
+const deletingDepartmentId = ref<string | null>(null)
 
 const locationModal = ref(false)
 const editingLocationId = ref<string | null>(null)
@@ -42,10 +57,11 @@ const DAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']
 async function load() {
   loading.value = true
   try {
-    ;[schedules.value, locations.value, devices.value] = await Promise.all([
+    ;[schedules.value, locations.value, devices.value, departments.value] = await Promise.all([
       listSchedules(),
       listLocations(),
       listDevices(),
+      listDepartments(),
     ])
   } catch {
     message.error('Gagal memuat master data')
@@ -102,6 +118,55 @@ async function onAddLocation() {
     load()
   } catch {
     message.error('Gagal menambah lokasi')
+  }
+}
+
+async function onAddDepartment() {
+  if (!newDepartment.value.trim()) return
+  try {
+    await createDepartment(newDepartment.value.trim())
+    newDepartment.value = ''
+    load()
+  } catch {
+    message.error('Gagal menambah departemen')
+  }
+}
+
+function openEditDepartment(dept: Department) {
+  editingDepartmentId.value = dept.id
+  departmentForm.value = { name: dept.name }
+  departmentModal.value = true
+}
+
+async function onSubmitDepartment() {
+  if (!departmentForm.value.name.trim()) {
+    message.error('Nama departemen wajib diisi')
+    return
+  }
+  if (!editingDepartmentId.value) return
+  departmentSubmitting.value = true
+  try {
+    await updateDepartment(editingDepartmentId.value, departmentForm.value.name.trim())
+    departmentModal.value = false
+    message.success('Departemen disimpan')
+    load()
+  } catch {
+    message.error('Gagal menyimpan departemen')
+  } finally {
+    departmentSubmitting.value = false
+  }
+}
+
+async function onDeleteDepartment(dept: Department) {
+  deletingDepartmentId.value = dept.id
+  try {
+    await deleteDepartment(dept.id)
+    message.success(`Departemen ${dept.name} dihapus`)
+    await load()
+  } catch (err: any) {
+    message.error(err?.response?.data?.error ?? 'Gagal menghapus departemen')
+  } finally {
+    deletingDepartmentId.value = null
   }
 }
 
@@ -224,6 +289,37 @@ async function onApprove(device: Device) {
       </a-list>
     </a-card>
 
+    <a-card title="Departemen" size="small" class="section">
+      <a-space class="add-row">
+        <a-input v-model:value="newDepartment" placeholder="Nama departemen" @press-enter="onAddDepartment" />
+        <a-button @click="onAddDepartment">Tambah</a-button>
+      </a-space>
+      <a-list size="small" :data-source="departments" :loading="loading">
+        <template #renderItem="{ item }">
+          <a-list-item>
+            {{ item.name }}
+            <template #actions>
+              <a-button type="link" size="small" @click="openEditDepartment(item)">Ubah</a-button>
+              <a-popconfirm
+                title="Hapus departemen ini?"
+                description="Departemen tidak bisa dihapus jika masih dipakai karyawan."
+                ok-text="Hapus"
+                cancel-text="Batal"
+                :ok-button-props="{ danger: true }"
+                @confirm="onDeleteDepartment(item)"
+              >
+                <a-button type="text" danger size="small" :loading="deletingDepartmentId === item.id">
+                  <template #icon><DeleteOutlined /></template>
+                  Hapus
+                </a-button>
+              </a-popconfirm>
+            </template>
+          </a-list-item>
+        </template>
+        <template #emptyText><a-empty description="Belum ada departemen" /></template>
+      </a-list>
+    </a-card>
+
     <a-card title="Perangkat" size="small" class="section">
       <p class="hint">
         Maksimal 2 perangkat disetujui per karyawan. Perangkat berikutnya menunggu persetujuan di sini.
@@ -272,6 +368,19 @@ async function onApprove(device: Device) {
         </a-form-item>
         <a-form-item label="Toleransi terlambat (menit)">
           <a-input-number v-model:value="form.late_tolerance_minutes" :min="0" :max="120" style="width: 100%" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+
+    <a-modal
+      v-model:open="departmentModal"
+      title="Ubah Departemen"
+      :confirm-loading="departmentSubmitting"
+      @ok="onSubmitDepartment"
+    >
+      <a-form layout="vertical">
+        <a-form-item label="Nama departemen">
+          <a-input v-model:value="departmentForm.name" placeholder="Nama departemen" @press-enter="onSubmitDepartment" />
         </a-form-item>
       </a-form>
     </a-modal>

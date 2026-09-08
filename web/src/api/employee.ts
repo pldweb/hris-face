@@ -1,5 +1,7 @@
 import { apiClient } from './client'
 
+export type EmployeeStatus = 'pending_enrollment' | 'active' | 'inactive'
+
 export interface Employee {
   id: string
   nik: string
@@ -7,7 +9,10 @@ export interface Employee {
   email: string
   department_id?: string
   location_id?: string
-  status: 'pending_enrollment' | 'active' | 'inactive'
+  schedule_id?: string
+  manager_id?: string
+  annual_leave_quota: number
+  status: EmployeeStatus
 }
 
 export interface Department {
@@ -28,11 +33,21 @@ export interface CreateEmployeeInput {
   location_id?: string
 }
 
+// Every optional field carries three meanings, matching the API: omitted keeps
+// the current value, '' clears it, and an id sets it. Sending undefined for a
+// field the form did not touch is what stops a partial save wiping data.
 export interface UpdateEmployeeInput {
+  nik?: string
   full_name: string
   email: string
   department_id?: string
   location_id?: string
+  schedule_id?: string
+  manager_id?: string
+  annual_leave_quota?: number
+  status?: EmployeeStatus
+  /** Non-empty resets the employee's login; omit to leave the password alone. */
+  password?: string
 }
 
 export interface CreateEmployeeResult {
@@ -61,6 +76,38 @@ export async function listDepartments(): Promise<Department[]> {
 export async function createDepartment(name: string): Promise<Department> {
   const { data } = await apiClient.post('/admin/departments', { name })
   return data
+}
+
+export async function updateDepartment(id: string, name: string): Promise<void> {
+  await apiClient.put(`/admin/departments/${id}`, { name })
+}
+
+export async function deleteDepartment(id: string): Promise<void> {
+  await apiClient.delete(`/admin/departments/${id}`)
+}
+
+export interface Profile {
+  full_name: string
+  email: string
+  role: string
+  nik?: string
+  is_employee: boolean
+}
+
+export interface UpdateProfileInput {
+  full_name?: string
+  email?: string
+  current_password?: string
+  new_password?: string
+}
+
+export async function fetchProfile(): Promise<Profile> {
+  const { data } = await apiClient.get<Profile>('/me/profile')
+  return data
+}
+
+export async function updateProfile(input: UpdateProfileInput): Promise<void> {
+  await apiClient.patch('/me/profile', input)
 }
 
 export interface Me {

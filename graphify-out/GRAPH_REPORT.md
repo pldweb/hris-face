@@ -1,16 +1,16 @@
 # Graph Report - hris-face  (2026-09-08)
 
 ## Corpus Check
-- 123 files · ~99,454 words
+- 129 files · ~105,927 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1452 nodes · 2001 edges · 110 communities (97 shown, 13 thin omitted)
+- 1537 nodes · 2150 edges · 128 communities (111 shown, 17 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 26 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `073ad733`
+- Built from commit: `bb844ef1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -55,7 +55,7 @@
 - 0002_refresh_tokens.up.sql
 - deploy.sh
 - github.com/hris-face/api
-- PRODUCT.md — HRIS Absensi Face Recognition
+- Face service
 - End-to-end tests and accuracy benchmarks
 - AGENTS.md
 - web-src-views-checkin-vue.md
@@ -119,18 +119,36 @@
 - test_all_pages.js
 - benchmark_liveness.py
 - seed_demo.py
+- ProfileModal.vue
+- masterdata.ts
+- InlineMasterSelect.vue
+- RegisterRoutes
+- 10. Arah Desain Frontend
+- 7. Kebutuhan Fungsional
+- load
+- 11. Deployment — VPS Tanpa Docker
+- PRODUCT.md — HRIS Absensi Face Recognition
+- Login.vue
+- 9. Arsitektur
+- HRIS Absensi — Face Recognition
+- test_hr_editing.py
+- test_hr_editing_ui.js
+- attendance.ts
+- 6. Alur Utama
+- 0005_profile_and_display_name.down.sql
+- 0005_profile_and_display_name.up.sql
 
 ## God Nodes (most connected - your core abstractions)
 1. `Service` - 19 edges
-2. `Group 1: Hard Gate (absolute, no exceptions)` - 18 edges
+2. `RegisterRoutes()` - 18 edges
 3. `Group 1: Hard Gate (absolute, no exceptions)` - 18 edges
-4. `PRD — HRIS Absensi Berbasis Face Recognition` - 16 edges
-5. `compilerOptions` - 15 edges
-6. `RegisterRoutes()` - 14 edges
-7. `tzDayjs()` - 14 edges
-8. `RegisterRoutes()` - 13 edges
-9. `Group 2: Purpose-Gate (technique allowed, purpose required)` - 13 edges
-10. `Group 2: Purpose-Gate (technique allowed, purpose required)` - 13 edges
+4. `Group 1: Hard Gate (absolute, no exceptions)` - 18 edges
+5. `Service` - 16 edges
+6. `PRD — HRIS Absensi Berbasis Face Recognition` - 16 edges
+7. `tzDayjs()` - 15 edges
+8. `compilerOptions` - 15 edges
+9. `Service` - 13 edges
+10. `RegisterRoutes()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `main()` --calls--> `FaceEngine`  [EXTRACTED]
@@ -142,12 +160,12 @@
 - `main()` --calls--> `Migrate()`  [INFERRED]
   api/cmd/api/main.go → api/internal/db/migrate.go
 - `RegisterRoutes()` --calls--> `RequireRole()`  [INFERRED]
-  api/internal/employee/handler.go → api/internal/middleware/auth.go
+  api/internal/correction/handler.go → api/internal/middleware/auth.go
 
 ## Import Cycles
 - None detected.
 
-## Communities (110 total, 13 thin omitted)
+## Communities (128 total, 17 thin omitted)
 
 ### Community 0 - "Enrollment.vue"
 Cohesion: 0.09
@@ -162,40 +180,40 @@ Cohesion: 0.23
 Nodes (9): eye_openness(), face_signature(), ndarray, Eye openness, used for the blink challenge (docs/PRD.md F5).  Passive anti-spoof, Mean vertical eye opening as a fraction of face width.      Normalising by face, An 8x8 grayscale thumbnail of the face crop.      The blink challenge needs to p, DetectedFace, ndarray (+1 more)
 
 ### Community 3 - "CheckIn.vue"
-Cohesion: 0.08
-Nodes (30): CheckInError, CheckInErrorCode, CheckInResult, submitAttendance(), submitChallenge(), fetchMe(), actionLabel, CameraError (+22 more)
+Cohesion: 0.09
+Nodes (27): submitAttendance(), submitChallenge(), fetchMe(), actionLabel, CameraError, canvasEl, captureBurst(), captureJpeg() (+19 more)
 
 ### Community 4 - "MyHistory.vue"
 Cohesion: 0.15
 Nodes (15): createCorrection(), listMyCorrections(), fetchMyHistory(), corrections, days, form, load(), loading (+7 more)
 
 ### Community 5 - "EmployeeList.vue"
-Cohesion: 0.08
-Nodes (23): createDepartment(), importEmployeesCsv(), columns, creatingDept, deactivatingId, departmentOptions, departments, editingId (+15 more)
+Cohesion: 0.07
+Nodes (27): deactivateEmployee(), importEmployeesCsv(), columns, deactivatingId, departmentOptions, departments, editingId, employees (+19 more)
 
 ### Community 6 - "AdminLayout.vue"
-Cohesion: 0.25
-Nodes (6): auth, initials, pageTitle, route, router, selectedKeys
+Cohesion: 0.22
+Nodes (7): auth, initials, pageTitle, profileOpen, route, router, selectedKeys
 
 ### Community 7 - "Service"
 Cohesion: 0.10
 Nodes (22): Service, Context, meanPairwiseVariation(), Duration, Time, NewPhotoStore(), TestPhotoStoreDisabled(), TestPhotoStoreRetention() (+14 more)
 
 ### Community 8 - "MasterData.vue"
-Cohesion: 0.09
-Nodes (32): approveDevice(), createLocation(), createSchedule(), deleteLocation(), Device, listDevices(), listSchedules(), Location (+24 more)
+Cohesion: 0.07
+Nodes (28): deleteDepartment(), approveDevice(), deleteLocation(), DAY_LABELS, deletingDepartmentId, deletingLocationId, departmentForm, departmentModal (+20 more)
 
 ### Community 9 - "main"
-Cohesion: 0.06
-Nodes (44): main(), main(), mustEnv(), challengeHandler(), HandlerFunc, IRoutes, Service, markHandler() (+36 more)
+Cohesion: 0.07
+Nodes (34): main(), main(), mustEnv(), challengeHandler(), HandlerFunc, IRoutes, Service, markHandler() (+26 more)
 
 ### Community 10 - "Monitoring.vue"
 Cohesion: 0.08
 Nodes (35): AttendanceFilter, AttendanceRow, DailySummary, DayRecord, deleteAttendance(), exportReport(), fetchToday(), listAttendances() (+27 more)
 
 ### Community 11 - "Service"
-Cohesion: 0.17
-Nodes (13): Context, Service, Pool, Time, NewService(), randomPassword(), CreateEmployeeInput, CreateEmployeeResult (+5 more)
+Cohesion: 0.14
+Nodes (15): Context, Service, Pool, Time, NewService(), randomPassword(), CreateEmployeeInput, CreateEmployeeResult (+7 more)
 
 ### Community 12 - "compilerOptions"
 Cohesion: 0.10
@@ -206,8 +224,8 @@ Cohesion: 0.11
 Nodes (19): Context, Pool, Time, NewService(), countWorkdays(), Context, Pool, Time (+11 more)
 
 ### Community 14 - "employee.ts"
-Cohesion: 0.14
-Nodes (17): createEmployee(), CreateEmployeeInput, CreateEmployeeResult, deactivateEmployee(), Department, Employee, ImportResult, ImportRow (+9 more)
+Cohesion: 0.13
+Nodes (15): createDepartment(), createEmployee(), CreateEmployeeInput, CreateEmployeeResult, Department, Employee, EmployeeStatus, ImportResult (+7 more)
 
 ### Community 15 - "Service"
 Cohesion: 0.20
@@ -230,8 +248,8 @@ Cohesion: 0.12
 Nodes (15): src/**/*.ts, src/**/*.tsx, src/**/*.vue, vite/client, @vue/tsconfig/tsconfig.dom.json, compilerOptions, allowArbitraryExtensions, erasableSyntaxOnly (+7 more)
 
 ### Community 20 - "employee/handler.go"
-Cohesion: 0.30
-Nodes (17): approveDeviceHandler(), createDepartmentHandler(), createHandler(), deactivateHandler(), HandlerFunc, IRoutes, Service, importHandler() (+9 more)
+Cohesion: 0.25
+Nodes (22): approveDeviceHandler(), createDepartmentHandler(), createHandler(), deactivateHandler(), deleteDepartmentHandler(), HandlerFunc, IRoutes, Service (+14 more)
 
 ### Community 21 - "auth/handler.go"
 Cohesion: 0.36
@@ -258,8 +276,8 @@ Cohesion: 0.17
 Nodes (5): prepare_faces(), End-to-end test against the real Go API + real Postgres/pgvector.  Runs against, Like request() but returns the raw body -- the CSV export is not JSON., Two LFW identities (two photos each) plus a third as the unknown face.      Enro, request_raw()
 
 ### Community 27 - "PRD — HRIS Absensi Berbasis Face Recognition"
-Cohesion: 0.04
-Nodes (47): 10.1 Tesis layar absen, 10.2 Sistem visual, 10.3 Layar absen — komposisi, 10.4 Layar admin, 10.5 State yang wajib ada (bukan opsional), 10.6 Motion, 10.7 Aksesibilitas & i18n, 10.8 Dependency frontend (+39 more)
+Cohesion: 0.17
+Nodes (12): 12. Risiko Produk, 13. Rencana Rilis, 14. Pertanyaan Terbuka, 1. Ringkasan, 2. Masalah, 3.1 Hasil pengukuran (2026-09-07), 3. Tujuan & Metrik Sukses, 4. Skala Target (+4 more)
 
 ### Community 28 - "throttle"
 Cohesion: 0.29
@@ -285,9 +303,9 @@ Nodes (5): HandlerFunc, IRoutes, Service, RegisterRoutes(), uploadHandler()
 Cohesion: 0.50
 Nodes (4): fetch(), main(), Path, Exports the official Silent-Face-Anti-Spoofing weights to ONNX.  Provenance matt
 
-### Community 46 - "PRODUCT.md — HRIS Absensi Face Recognition"
-Cohesion: 0.09
-Nodes (19): Accuracy, Anti-spoof models, Face service, Run, Setup, Two things that will silently break this model, Apa ini, Batasan yang mengikat (+11 more)
+### Community 46 - "Face service"
+Cohesion: 0.20
+Nodes (6): Accuracy, Anti-spoof models, Face service, Run, Setup, Two things that will silently break this model
 
 ### Community 47 - "End-to-end tests and accuracy benchmarks"
 Cohesion: 0.40
@@ -298,8 +316,8 @@ Cohesion: 0.05
 Nodes (38): Actorless Passive, All-Caps Emphasis, antislop-copywriting, Aphorism Formulas, Boldface Overuse, Chatbot Closers, Copywriting Skill Checklist, Draft, audit, final (+30 more)
 
 ### Community 52 - "tzDayjs"
-Cohesion: 0.29
-Nodes (6): Dayjs, DayjsArgs, tzDayjs(), onEditOpen(), openModal(), openCorrection()
+Cohesion: 0.25
+Nodes (7): Dayjs, DayjsArgs, tzDayjs(), openEdit(), onEditOpen(), openModal(), openCorrection()
 
 ### Community 53 - "antislop-layoutmobile"
 Cohesion: 0.07
@@ -310,12 +328,12 @@ Cohesion: 0.27
 Nodes (4): i18n, router, attendanceStatusColor, themeTokens
 
 ### Community 55 - "EmployeeNav.vue"
-Cohesion: 0.20
-Nodes (7): auth, canSeeTeam, initials, isAdmin, links, route, router
+Cohesion: 0.18
+Nodes (8): auth, canSeeTeam, initials, isAdmin, links, profileOpen, route, router
 
 ### Community 56 - "client.ts"
-Cohesion: 0.17
-Nodes (10): refreshAccessToken(), useAuthStore, auth, errorMessage, form, router, submitting, auth (+2 more)
+Cohesion: 0.31
+Nodes (5): refreshAccessToken(), useAuthStore, auth, homePath, route
 
 ### Community 59 - "antislop-layoutmobile"
 Cohesion: 0.07
@@ -338,8 +356,8 @@ Cohesion: 0.11
 Nodes (18): Group 1: Hard Gate (absolute, no exceptions), R-02 — Copywriting, R-03 — Mobile Responsiveness, R-17 — Data & Numbers, R-18 — Testimonials, R-23 — Clarification & Visual Assets, R-24 — Navigation, R-25 — Color Contrast (+10 more)
 
 ### Community 64 - "LeaveRequest.vue"
-Cohesion: 0.17
-Nodes (16): createLeaveRequest(), fetchMyLeaveBalance(), LeaveBalance, LeaveStatus, LeaveType, listMyLeaveRequests(), balance, form (+8 more)
+Cohesion: 0.16
+Nodes (17): createLeaveRequest(), fetchMyLeaveBalance(), LeaveBalance, LeaveRequest, LeaveStatus, LeaveType, listMyLeaveRequests(), balance (+9 more)
 
 ### Community 65 - "Comments That Add Nothing"
 Cohesion: 0.12
@@ -354,12 +372,12 @@ Cohesion: 0.13
 Nodes (15): apiClient, FaceScanResult, scanFace(), cameraError, canScan, canvasEl, captureJpeg(), onScan() (+7 more)
 
 ### Community 68 - "LeaveRequests.vue"
-Cohesion: 0.16
-Nodes (14): decideLeaveRequest(), LeaveRequest, listAdminLeaveRequests(), columns, confirmReview(), items, labelForType(), load() (+6 more)
+Cohesion: 0.12
+Nodes (20): decideLeaveRequest(), listAdminLeaveRequests(), updateLeaveRequest(), columns, confirmReview(), editForm, editing, editOpen (+12 more)
 
 ### Community 69 - "leave/handler.go"
-Cohesion: 0.41
-Nodes (13): createHandler(), Context, HandlerFunc, IRoutes, Service, listHandler(), myBalanceHandler(), myListHandler() (+5 more)
+Cohesion: 0.36
+Nodes (15): createHandler(), Context, HandlerFunc, IRoutes, Service, listHandler(), myBalanceHandler(), myListHandler() (+7 more)
 
 ### Community 70 - "Group 2: Purpose-Gate (technique allowed, purpose required)"
 Cohesion: 0.15
@@ -513,25 +531,81 @@ Nodes (4): main(), ndarray, Measures anti-spoof accuracy against docs/PRD.md sec
 Cohesion: 0.40
 Nodes (3): Fills a freshly-seeded database with realistic demo data so every screen has som, A date `offset_days` back from today, skipped back off weekends., workday()
 
+### Community 110 - "ProfileModal.vue"
+Cohesion: 0.15
+Nodes (15): fetchProfile(), Profile, updateProfile(), auth, changingPassword, emit, form, load() (+7 more)
+
+### Community 111 - "masterdata.ts"
+Cohesion: 0.17
+Nodes (11): createLocation(), createSchedule(), Device, listDevices(), Location, Schedule, updateLocation(), updateSchedule() (+3 more)
+
+### Community 112 - "InlineMasterSelect.vue"
+Cohesion: 0.20
+Nodes (9): busy, cancel(), draft, emit, Mode, model, props, save() (+1 more)
+
+### Community 113 - "RegisterRoutes"
+Cohesion: 0.38
+Nodes (10): createHandler(), HandlerFunc, IRoutes, Service, listHandler(), myListHandler(), RegisterRoutes(), reviewHandler() (+2 more)
+
+### Community 114 - "10. Arah Desain Frontend"
+Cohesion: 0.22
+Nodes (9): 10.1 Tesis layar absen, 10.2 Sistem visual, 10.3 Layar absen — komposisi, 10.4 Layar admin, 10.5 State yang wajib ada (bukan opsional), 10.6 Motion, 10.7 Aksesibilitas & i18n, 10.8 Dependency frontend (+1 more)
+
+### Community 115 - "7. Kebutuhan Fungsional"
+Cohesion: 0.22
+Nodes (9): 7. Kebutuhan Fungsional, F1 — Autentikasi & Otorisasi, F2 — Master Data, F3 — Face Enrollment, F4 — Absensi, F5 — Anti-Spoofing (wajib rilis 1), F6 — Dashboard & Laporan, F7 — Koreksi & Audit (+1 more)
+
+### Community 116 - "load"
+Cohesion: 0.31
+Nodes (9): listDepartments(), listEmployees(), updateDepartment(), listLocations(), listSchedules(), loadAll(), reloadMasterLists(), load() (+1 more)
+
+### Community 117 - "11. Deployment — VPS Tanpa Docker"
+Cohesion: 0.29
+Nodes (7): 11.1 Komponen, 11.2 Caddy, 11.3 systemd, 11.4 Deploy, 11.5 Backup & operasional, 11.6 Risiko VPS satu mesin, 11. Deployment — VPS Tanpa Docker
+
+### Community 118 - "PRODUCT.md — HRIS Absensi Face Recognition"
+Cohesion: 0.29
+Nodes (7): Apa ini, Batasan yang mengikat, Bukan tujuan (rilis 1), Mekanisme unik, Pengguna & scene nyata, PRODUCT.md — HRIS Absensi Face Recognition, Yang bikin hasil poles terasa salah
+
+### Community 119 - "Login.vue"
+Cohesion: 0.29
+Nodes (5): auth, errorMessage, form, router, submitting
+
+### Community 120 - "9. Arsitektur"
+Cohesion: 0.33
+Nodes (6): 9. Arsitektur, API (garis besar), Kenapa 3 bahasa, Model, Pencocokan — ArcFace + Cosine Similarity (final), Skema data inti
+
+### Community 121 - "HRIS Absensi — Face Recognition"
+Cohesion: 0.33
+Nodes (6): Coba sendiri (satu perintah), Deploy ke VPS, Development, HRIS Absensi — Face Recognition, Status, Struktur
+
+### Community 124 - "attendance.ts"
+Cohesion: 0.40
+Nodes (3): CheckInError, CheckInErrorCode, CheckInResult
+
+### Community 125 - "6. Alur Utama"
+Cohesion: 0.50
+Nodes (4): 6.1 Enrollment (pendaftaran wajah), 6.2 Check-in / Check-out, 6.3 Koreksi, 6. Alur Utama
+
 ## Knowledge Gaps
-- **676 isolated node(s):** `github.com/hris-face/api`, `Service`, `loginRequest`, `createRequest`, `reviewRequest` (+671 more)
+- **716 isolated node(s):** `github.com/hris-face/api`, `Service`, `loginRequest`, `createRequest`, `reviewRequest` (+711 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **13 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RequireRole()` connect `main` to `report/handler.go`, `employee/handler.go`, `leave/handler.go`, `RegisterRoutes`?**
-  _High betweenness centrality (0.014) - this node is a cross-community bridge._
+- **Why does `RequireRole()` connect `main` to `leave/handler.go`, `report/handler.go`, `RegisterRoutes`, `employee/handler.go`, `RegisterRoutes`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Why does `main()` connect `main` to `Service`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **What connects `github.com/hris-face/api`, `Service`, `loginRequest` to the rest of the system?**
-  _676 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _716 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Enrollment.vue` be split into smaller, more focused modules?**
   _Cohesion score 0.09 - nodes in this community are weakly interconnected._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `CheckIn.vue` be split into smaller, more focused modules?**
-  _Cohesion score 0.08199643493761141 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09113300492610837 - nodes in this community are weakly interconnected._
 - **Should `MyHistory.vue` be split into smaller, more focused modules?**
   _Cohesion score 0.14705882352941177 - nodes in this community are weakly interconnected._

@@ -141,6 +141,136 @@ func (s *Service) Create(ctx context.Context, userID, leaveType, startDate, endD
 	return &lr, nil
 }
 
+// Update lets HR correct a request in place -- wrong dates, wrong type, a
+// reason that needs clarifying -- instead of forcing a reject-and-resubmit
+// round trip through the employee. Everything Create validates is revalidated
+// here, because an edit can just as easily create an overlap or blow the quota.
+func (s *Service) Update(ctx context.Context, leaveID, actorUserID, leaveType, startDate, endDate, reason string) (*LeaveRequest, error) {
+	if leaveType != "annual" && leaveType != "sick" && leaveType != "permit" {
+		return nil, ErrInvalidType
+	}
+	start, err := time.Parse(dateLayout, startDate)
+	if err != nil {
+		return nil, ErrInvalidRange
+	}
+	end, err := time.Parse(dateLayout, endDate)
+	if err != nil {
+		return nil, ErrInvalidRange
+	}
+	if end.Before(start) {
+		return nil, ErrInvalidRange
+	}
+
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx) //nolint:errcheck
+
+	var lr LeaveRequest
+	var before struct {
+		Type, Start, End, Reason string
+		Days                     int
+	}
+	err = tx.QueryRow(ctx, `
+		SELECT id, employee_id, type::text, start_date::text, end_date::text, days_count, reason, status, created_at
+		FROM leave_requests WHERE id = $1 FOR UPDATE`, leaveID).
+		Scan(&lr.ID, &lr.EmployeeID, &before.Type, &before.Start, &before.End, &before.Days,
+			&before.Reason, &lr.Status, &lr.CreatedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	var scheduleID *string
+	if err := tx.QueryRow(ctx,
+		`SELECT full_name, schedule_id::text FROM employees WHERE id = $1`, lr.EmployeeID).
+		Scan(&lr.FullName, &scheduleID); err != nil {
+		return nil, err
+	}
+
+	workDays := defaultWorkDays
+	if scheduleID != nil {
+		if err := tx.QueryRow(ctx,
+			`SELECT work_days FROM work_schedules WHERE id = $1`, *scheduleID).Scan(&workDays); err != nil && !errors.Is(err, pgx.ErrNoRows) {
+			return nil, err
+		}
+	}
+
+	daysCount := countWorkdays(start, end, workDays)
+	if daysCount == 0 {
+		return nil, ErrNoWorkdays
+	}
+
+	// Excluding this row is what makes an edit different from a create: a
+	// request always overlaps itself, and re-saving it unchanged must not fail.
+	var overlap bool
+	if err := tx.QueryRow(ctx, `
+		SELECT EXISTS(
+			SELECT 1 FROM leave_requests
+			WHERE employee_id = $1 AND id != $2 AND status IN ('pending','approved')
+			  AND daterange(start_date, end_date, '[]') && daterange($3::date, $4::date, '[]')
+		)`, lr.EmployeeID, leaveID, startDate, endDate).Scan(&overlap); err != nil {
+		return nil, err
+	}
+	if overlap {
+		return nil, ErrOverlap
+	}
+
+	// An already-approved annual request is currently consuming quota, so its
+	// own old day count has to be added back before asking whether the new one
+	// fits -- otherwise stretching an approved leave by a day is measured
+	// against a balance that already includes it.
+	if leaveType == "annual" {
+		var quota, used int
+		if err := tx.QueryRow(ctx,
+			`SELECT annual_leave_quota FROM employees WHERE id = $1`, lr.EmployeeID).Scan(&quota); err != nil {
+			return nil, err
+		}
+		if err := tx.QueryRow(ctx, `
+			SELECT COALESCE(SUM(days_count), 0) FROM leave_requests
+			WHERE employee_id = $1 AND id != $2 AND type = 'annual' AND status = 'approved'
+			  AND EXTRACT(YEAR FROM start_date) = $3`, lr.EmployeeID, leaveID, start.Year()).Scan(&used); err != nil {
+			return nil, err
+		}
+		if quota-used < daysCount {
+			return nil, ErrQuotaExceeded
+		}
+	}
+
+	if _, err := tx.Exec(ctx, `
+		UPDATE leave_requests
+		SET type = $1, start_date = $2, end_date = $3, days_count = $4, reason = $5
+		WHERE id = $6`, leaveType, startDate, endDate, daysCount, reason, leaveID); err != nil {
+		return nil, err
+	}
+
+	beforeJSON, _ := json.Marshal(map[string]any{
+		"type": before.Type, "start_date": before.Start, "end_date": before.End,
+		"days_count": before.Days, "reason": before.Reason,
+	})
+	afterJSON, _ := json.Marshal(map[string]any{
+		"type": leaveType, "start_date": startDate, "end_date": endDate,
+		"days_count": daysCount, "reason": reason,
+	})
+	if _, err := tx.Exec(ctx, `
+		INSERT INTO audit_logs (actor_id, action, entity, entity_id, before_data, after_data)
+		VALUES ($1, 'leave_edited', 'leave_request', $2, $3, $4)`,
+		actorUserID, leaveID, beforeJSON, afterJSON); err != nil {
+		return nil, err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, err
+	}
+
+	lr.Type, lr.StartDate, lr.EndDate = leaveType, startDate, endDate
+	lr.DaysCount, lr.Reason = daysCount, reason
+	return &lr, nil
+}
+
 // countWorkdays counts calendar dates in [start, end] whose ISO weekday
 // (Monday=1..Sunday=7) appears in workDays.
 func countWorkdays(start, end time.Time, workDays []int16) int {
@@ -150,7 +280,7 @@ func countWorkdays(start, end time.Time, workDays []int16) int {
 	}
 	count := 0
 	for d := start; !d.After(end); d = d.AddDate(0, 0, 1) {
-		if _, ok := allowed[int(d.Weekday()+6)%7 + 1]; ok {
+		if _, ok := allowed[int(d.Weekday()+6)%7+1]; ok {
 			count++
 		}
 	}

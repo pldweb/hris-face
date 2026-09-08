@@ -10,6 +10,8 @@ import (
 
 func RegisterRoutes(r gin.IRoutes, svc *Service) {
 	r.GET("/me", meHandler(svc))
+	r.GET("/me/profile", profileHandler(svc))
+	r.PATCH("/me/profile", updateProfileHandler(svc))
 	r.GET("/admin/employees", middleware.RequireRole("hr", "superadmin"), listHandler(svc))
 	r.POST("/admin/employees", middleware.RequireRole("hr", "superadmin"), createHandler(svc))
 	r.PUT("/admin/employees/:id", middleware.RequireRole("hr", "superadmin"), updateHandler(svc))
@@ -17,6 +19,8 @@ func RegisterRoutes(r gin.IRoutes, svc *Service) {
 	r.POST("/admin/employees/import", middleware.RequireRole("hr", "superadmin"), importHandler(svc))
 	r.GET("/admin/departments", middleware.RequireRole("hr", "superadmin"), listDepartmentsHandler(svc))
 	r.POST("/admin/departments", middleware.RequireRole("hr", "superadmin"), createDepartmentHandler(svc))
+	r.PUT("/admin/departments/:id", middleware.RequireRole("hr", "superadmin"), updateDepartmentHandler(svc))
+	r.DELETE("/admin/departments/:id", middleware.RequireRole("hr", "superadmin"), deleteDepartmentHandler(svc))
 	r.GET("/admin/devices", middleware.RequireRole("hr", "superadmin"), listDevicesHandler(svc))
 	r.POST("/admin/devices/:id/approve", middleware.RequireRole("hr", "superadmin"), approveDeviceHandler(svc))
 }
@@ -87,10 +91,16 @@ func createHandler(svc *Service) gin.HandlerFunc {
 }
 
 type updateEmployeeRequest struct {
-	FullName     string  `json:"full_name" binding:"required"`
-	Email        string  `json:"email" binding:"required,email"`
-	DepartmentID *string `json:"department_id"`
-	LocationID   *string `json:"location_id"`
+	NIK              string  `json:"nik"`
+	FullName         string  `json:"full_name" binding:"required"`
+	Email            string  `json:"email" binding:"required,email"`
+	DepartmentID     *string `json:"department_id"`
+	LocationID       *string `json:"location_id"`
+	ScheduleID       *string `json:"schedule_id"`
+	ManagerID        *string `json:"manager_id"`
+	AnnualLeaveQuota *int    `json:"annual_leave_quota"`
+	Status           *string `json:"status"`
+	Password         string  `json:"password"`
 }
 
 func updateHandler(svc *Service) gin.HandlerFunc {
@@ -102,16 +112,21 @@ func updateHandler(svc *Service) gin.HandlerFunc {
 		}
 
 		err := svc.Update(c.Request.Context(), c.Param("id"), UpdateEmployeeInput{
-			FullName: req.FullName, Email: req.Email,
+			NIK: req.NIK, FullName: req.FullName, Email: req.Email,
 			DepartmentID: req.DepartmentID, LocationID: req.LocationID,
+			ScheduleID: req.ScheduleID, ManagerID: req.ManagerID,
+			AnnualLeaveQuota: req.AnnualLeaveQuota, Status: req.Status,
+			Password: req.Password,
 		})
 		switch {
 		case err == nil:
 			c.JSON(http.StatusOK, gin.H{"status": "ok"})
 		case errors.Is(err, ErrEmployeeNotFound):
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-		case errors.Is(err, ErrEmailTaken):
+		case errors.Is(err, ErrEmailTaken), errors.Is(err, ErrNIKTaken):
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		case errors.Is(err, ErrWeakPassword), errors.Is(err, ErrInvalidStatus), errors.Is(err, ErrSelfManager):
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		default:
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal memperbarui karyawan"})
 		}
@@ -212,5 +227,90 @@ func importHandler(svc *Service) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, result)
+	}
+}
+
+func profileHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		p, err := svc.Profile(c.Request.Context(), c.GetString("user_id"))
+		if err != nil {
+			if errors.Is(err, ErrEmployeeNotFound) {
+				c.JSON(http.StatusNotFound, gin.H{"error": "akun tidak ditemukan"})
+				return
+			}
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mengambil profil"})
+			return
+		}
+		c.JSON(http.StatusOK, p)
+	}
+}
+
+type updateProfileRequest struct {
+	FullName        string `json:"full_name"`
+	Email           string `json:"email"`
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
+func updateProfileHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req updateProfileRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "data profil tidak valid"})
+			return
+		}
+		err := svc.UpdateProfile(c.Request.Context(), c.GetString("user_id"), UpdateProfileInput{
+			FullName:        req.FullName,
+			Email:           req.Email,
+			CurrentPassword: req.CurrentPassword,
+			NewPassword:     req.NewPassword,
+		})
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, gin.H{"status": "ok"})
+		case errors.Is(err, ErrEmployeeNotFound):
+			c.JSON(http.StatusNotFound, gin.H{"error": "akun tidak ditemukan"})
+		case errors.Is(err, ErrEmailTaken):
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		case errors.Is(err, ErrWeakPassword), errors.Is(err, ErrWrongPassword):
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal memperbarui profil"})
+		}
+	}
+}
+
+func updateDepartmentHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req createDepartmentRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "nama departemen wajib diisi"})
+			return
+		}
+		err := svc.UpdateDepartment(c.Request.Context(), c.Param("id"), req.Name)
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, gin.H{"status": "ok"})
+		case errors.Is(err, ErrDepartmentNotFound):
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal memperbarui departemen"})
+		}
+	}
+}
+
+func deleteDepartmentHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := svc.DeleteDepartment(c.Request.Context(), c.Param("id"))
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, gin.H{"status": "ok"})
+		case errors.Is(err, ErrDepartmentNotFound):
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		case errors.Is(err, ErrDepartmentInUse):
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal menghapus departemen"})
+		}
 	}
 }

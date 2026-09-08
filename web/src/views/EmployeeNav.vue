@@ -5,10 +5,12 @@
 // navigate and visibly a different product. This mirrors AdminLayout's sider:
 // same brand mark, same solid-blue active pill, same box-shadow-not-dropdown
 // language, so the employee side reads as the same app, not a bolted-on page.
-import { CalendarOutlined, DashboardOutlined, DownOutlined, FileTextOutlined, HistoryOutlined, LogoutOutlined, TeamOutlined } from '@ant-design/icons-vue'
-import { computed } from 'vue'
+import { CalendarOutlined, DashboardOutlined, DownOutlined, FileTextOutlined, HistoryOutlined, LogoutOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { fetchProfile } from '../api/employee'
 import { useAuthStore } from '../stores/auth'
+import ProfileModal from './ProfileModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -29,6 +31,17 @@ const links = computed(() => [
   { to: '/cuti', label: 'Cuti', icon: FileTextOutlined },
   ...(canSeeTeam.value ? [{ to: '/tim', label: 'Tim', icon: TeamOutlined }] : []),
 ])
+
+const profileOpen = ref(false)
+
+onMounted(async () => {
+  if (auth.fullName) return
+  try {
+    auth.fullName = (await fetchProfile()).full_name
+  } catch {
+    // Non-fatal: the nav falls back to a generic label.
+  }
+})
 
 async function onLogout() {
   await auth.logoutFully()
@@ -68,11 +81,14 @@ async function onLogout() {
         </a-button>
         <template #overlay>
           <a-menu>
+            <a-menu-item @click="profileOpen = true"><UserOutlined /> Profil Saya</a-menu-item>
             <a-menu-item @click="onLogout"><LogoutOutlined /> Keluar</a-menu-item>
           </a-menu>
         </template>
       </a-dropdown>
     </div>
+
+    <ProfileModal v-model:open="profileOpen" />
   </header>
 </template>
 

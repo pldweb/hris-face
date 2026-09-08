@@ -13,10 +13,13 @@ import {
   ScanOutlined,
   SettingOutlined,
   TeamOutlined,
+  UserOutlined,
 } from '@ant-design/icons-vue'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { fetchProfile } from '../../api/employee'
 import { useAuthStore } from '../../stores/auth'
+import ProfileModal from '../ProfileModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,6 +28,19 @@ const auth = useAuthStore()
 const selectedKeys = computed(() => [route.path])
 const pageTitle = computed(() => route.path.includes('face-scan') ? 'Scan Wajah' : route.path.includes('employees') ? 'Karyawan' : route.path.includes('corrections') ? 'Koreksi Absen' : route.path.includes('leave-requests') ? 'Cuti & Izin' : route.path.includes('master') ? 'Master Data' : 'Monitoring')
 const initials = computed(() => (auth.fullName ?? 'Admin').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase())
+
+const profileOpen = ref(false)
+
+// The header used to read a hardcoded "Admin" because nothing ever populated
+// the store's name; load the real one so the account is identifiable.
+onMounted(async () => {
+  if (auth.fullName) return
+  try {
+    auth.fullName = (await fetchProfile()).full_name
+  } catch {
+    // A failed profile fetch must not break the shell; the fallback name shows.
+  }
+})
 
 async function onLogout() {
   await auth.logoutFully()
@@ -88,6 +104,7 @@ async function onLogout() {
             </a-button>
             <template #overlay>
               <a-menu>
+                <a-menu-item @click="profileOpen = true"><UserOutlined /> Profil Saya</a-menu-item>
                 <a-menu-item @click="onLogout"><LogoutOutlined /> Keluar</a-menu-item>
               </a-menu>
             </template>
@@ -97,6 +114,7 @@ async function onLogout() {
       <a-layout-content class="admin-content">
         <router-view />
       </a-layout-content>
+      <ProfileModal v-model:open="profileOpen" />
       <footer class="admin-footer">© {{ new Date().getFullYear() }} HRIS Face Attendance. All rights reserved.</footer>
     </a-layout>
   </a-layout>

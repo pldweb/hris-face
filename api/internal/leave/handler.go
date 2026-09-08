@@ -19,6 +19,7 @@ func RegisterRoutes(r gin.IRoutes, svc *Service) {
 	hr := middleware.RequireRole("hr", "superadmin")
 	r.GET("/admin/leave-requests", hr, listHandler(svc))
 	r.PATCH("/admin/leave-requests/:id", hr, reviewHandler(svc))
+	r.PUT("/admin/leave-requests/:id", hr, updateHandler(svc))
 }
 
 func writeErr(c *gin.Context, err error) {
@@ -124,5 +125,37 @@ func reviewHandler(svc *Service) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, out)
+	}
+}
+
+type updateLeaveRequest struct {
+	Type      string `json:"type" binding:"required,oneof=annual sick permit"`
+	StartDate string `json:"start_date" binding:"required"`
+	EndDate   string `json:"end_date" binding:"required"`
+	Reason    string `json:"reason" binding:"required"`
+}
+
+func updateHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req updateLeaveRequest
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "data pengajuan cuti tidak lengkap atau tidak valid"})
+			return
+		}
+		lr, err := svc.Update(c.Request.Context(), c.Param("id"), c.GetString("user_id"),
+			req.Type, req.StartDate, req.EndDate, req.Reason)
+		switch {
+		case err == nil:
+			c.JSON(http.StatusOK, lr)
+		case errors.Is(err, ErrNotFound):
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		case errors.Is(err, ErrOverlap):
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		case errors.Is(err, ErrInvalidType), errors.Is(err, ErrInvalidRange),
+			errors.Is(err, ErrNoWorkdays), errors.Is(err, ErrQuotaExceeded):
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal memperbarui pengajuan cuti"})
+		}
 	}
 }

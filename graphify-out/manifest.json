@@ -110,8 +110,8 @@
     "semantic_hash": "8c2612a337e1748a9f72de1a718ddf31"
   },
   "api/internal/employee/handler.go": {
-    "mtime": 1788804723.129779,
-    "ast_hash": "0106ffc73702f0a3133c61ea510aa484",
+    "mtime": 1788836535.004486,
+    "ast_hash": "a0901c798297161283c47359cbc076de",
     "semantic_hash": ""
   },
   "api/internal/employee/import.go": {
@@ -120,8 +120,8 @@
     "semantic_hash": "85e09af6d79e2cd1eebd7d17280da6ad"
   },
   "api/internal/employee/service.go": {
-    "mtime": 1788805245.4444842,
-    "ast_hash": "194d134c4971b6fd0800b6f41fc40381",
+    "mtime": 1788836535.190485,
+    "ast_hash": "1c4b26570de2bbb986658daff5b9c3a1",
     "semantic_hash": ""
   },
   "api/internal/enrollment/handler.go": {
@@ -280,8 +280,8 @@
     "semantic_hash": "77ec6706390f295889fb47f573a0242d"
   },
   "web/src/api/employee.ts": {
-    "mtime": 1788804931.1548884,
-    "ast_hash": "40d4c46bbf00a997b5a29bfbbf46c597",
+    "mtime": 1788836691.7925463,
+    "ast_hash": "2a746241fb3cf145cc61df5f6e49d23e",
     "semantic_hash": ""
   },
   "web/src/api/enrollment.ts": {
@@ -360,8 +360,8 @@
     "semantic_hash": ""
   },
   "web/src/views/admin/AdminLayout.vue": {
-    "mtime": 1788807560.4106996,
-    "ast_hash": "229cc1e36207b3c3c38079fe3585babb",
+    "mtime": 1788836730.876393,
+    "ast_hash": "8a4a8872963b06e74ea96a31c93ed64e",
     "semantic_hash": ""
   },
   "web/src/views/admin/Corrections.vue": {
@@ -370,8 +370,8 @@
     "semantic_hash": ""
   },
   "web/src/views/admin/EmployeeList.vue": {
-    "mtime": 1788804968.5540166,
-    "ast_hash": "9e727e8d266dcbda11c6967485ccea35",
+    "mtime": 1788836985.3762255,
+    "ast_hash": "a4c56e2d4ae4c5848176006a33eab1ce",
     "semantic_hash": ""
   },
   "web/src/views/admin/FaceScan.vue": {
@@ -380,8 +380,8 @@
     "semantic_hash": "804c71c4bbdab4eed58efb4408478105"
   },
   "web/src/views/admin/MasterData.vue": {
-    "mtime": 1788804979.3200128,
-    "ast_hash": "fdc012e1bdf457aa0131f49ca41400e5",
+    "mtime": 1788836864.2195106,
+    "ast_hash": "19a8b4a90af583fbd72c88a862a6cebc",
     "semantic_hash": ""
   },
   "web/src/views/admin/Monitoring.vue": {
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "web/src/views/EmployeeNav.vue": {
-    "mtime": 1788832757.0208054,
-    "ast_hash": "78b2d45564d66da40e342d870ee64e7e",
+    "mtime": 1788836730.876619,
+    "ast_hash": "e6d3913d090daaf5301d48c9f88fec39",
     "semantic_hash": ""
   },
   ".agents/skills/antislop-human/contrast-check.py": {
@@ -525,13 +525,13 @@
     "semantic_hash": ""
   },
   "api/internal/leave/handler.go": {
-    "mtime": 1788807047.348282,
-    "ast_hash": "27c2a35b5ed11ae0250a56f6d1211ce9",
+    "mtime": 1788836580.0808592,
+    "ast_hash": "333296ee27a6606cb21dc4d464467702",
     "semantic_hash": ""
   },
   "api/internal/leave/service.go": {
-    "mtime": 1788807029.9871957,
-    "ast_hash": "e50fbd481a6a62a27cf9c2d7550106c8",
+    "mtime": 1788836567.986282,
+    "ast_hash": "cfdce9873646edaead9be10658cad44b",
     "semantic_hash": ""
   },
   "skills-lock.json": {
@@ -545,8 +545,8 @@
     "semantic_hash": ""
   },
   "web/src/api/leave.ts": {
-    "mtime": 1788807463.1636982,
-    "ast_hash": "cf0c3d5a907c064ed309742b5bd5116b",
+    "mtime": 1788836691.7928517,
+    "ast_hash": "bc56618e5fe917282e622d1609aa122e",
     "semantic_hash": ""
   },
   "web/src/views/LeaveRequest.vue": {
@@ -555,8 +555,8 @@
     "semantic_hash": ""
   },
   "web/src/views/admin/LeaveRequests.vue": {
-    "mtime": 1788807547.7626216,
-    "ast_hash": "f36c49403d9f3c1592085e8fe2008c98",
+    "mtime": 1788836838.192901,
+    "ast_hash": "f3028f34cf961974db6a262516f71180",
     "semantic_hash": ""
   },
   ".agents/skills/antislop-code/SKILL.md": {
@@ -632,6 +632,36 @@
   "web/src/views/NotFound.vue": {
     "mtime": 1788832554.3232677,
     "ast_hash": "773efcd2d1b37b6f96181c26c0b9da0c",
+    "semantic_hash": ""
+  },
+  "api/internal/db/migrations/0005_profile_and_display_name.down.sql": {
+    "mtime": 1788836368.759579,
+    "ast_hash": "35ed76a4d5f93bd1b4867b8ea21d0533",
+    "semantic_hash": ""
+  },
+  "api/internal/db/migrations/0005_profile_and_display_name.up.sql": {
+    "mtime": 1788836365.1656039,
+    "ast_hash": "5bb96b3908cf9139625dfbc7510c664f",
+    "semantic_hash": ""
+  },
+  "test/e2e/test_hr_editing.py": {
+    "mtime": 1788836662.41195,
+    "ast_hash": "7ce548ade1bf67161bc538e4235a7ee2",
+    "semantic_hash": ""
+  },
+  "test/e2e/test_hr_editing_ui.js": {
+    "mtime": 1788836918.5930543,
+    "ast_hash": "4228f498dbb0211e8c73c672056f4809",
+    "semantic_hash": ""
+  },
+  "web/src/views/ProfileModal.vue": {
+    "mtime": 1788836711.4910312,
+    "ast_hash": "0300df6e3105f264f7837784e7f2ae58",
+    "semantic_hash": ""
+  },
+  "web/src/views/admin/InlineMasterSelect.vue": {
+    "mtime": 1788836765.7851264,
+    "ast_hash": "dcd1fedb9e126ae59bb4fad4bfc85eb8",
     "semantic_hash": ""
   }
 }
