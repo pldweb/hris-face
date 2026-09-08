@@ -7,6 +7,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { submitEnrollment } from '../api/enrollment'
+import EmployeeNav from './EmployeeNav.vue'
 import { useFaceFrame } from './useFaceFrame'
 
 const MIN_PHOTOS = 3
@@ -99,7 +100,9 @@ onUnmounted(() => captures.value.forEach((c) => URL.revokeObjectURL(c.url)))
 </script>
 
 <template>
-  <div class="enroll-page">
+  <div class="enroll-shell">
+    <EmployeeNav />
+    <div class="enroll-page">
     <div class="enroll-column">
       <header class="enroll-header">
         <h2>{{ isReEnroll ? t('enroll.titleRe') : t('enroll.title') }}</h2>
@@ -132,12 +135,19 @@ onUnmounted(() => captures.value.forEach((c) => URL.revokeObjectURL(c.url)))
         </a-button>
       </template>
     </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.enroll-page {
+.enroll-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.enroll-page {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;

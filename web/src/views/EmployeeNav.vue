@@ -15,16 +15,20 @@ const router = useRouter()
 const auth = useAuthStore()
 
 const isAdmin = computed(() => ['hr', 'superadmin'].includes(auth.role ?? ''))
+// The team screen is served by /team/*, which the API restricts to managers
+// and above. Showing "Tim" to everyone meant an ordinary employee clicked a
+// menu item that could only ever answer 403.
+const canSeeTeam = computed(() => ['manager', 'hr', 'superadmin'].includes(auth.role ?? ''))
 const initials = computed(() =>
   (auth.fullName ?? 'Karyawan').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase(),
 )
 
-const links = [
+const links = computed(() => [
   { to: '/checkin', label: 'Absen', icon: CalendarOutlined },
   { to: '/riwayat', label: 'Riwayat Saya', icon: HistoryOutlined },
   { to: '/cuti', label: 'Cuti', icon: FileTextOutlined },
-  { to: '/tim', label: 'Tim', icon: TeamOutlined },
-]
+  ...(canSeeTeam.value ? [{ to: '/tim', label: 'Tim', icon: TeamOutlined }] : []),
+])
 
 async function onLogout() {
   await auth.logoutFully()

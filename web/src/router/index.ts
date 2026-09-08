@@ -28,7 +28,9 @@ const router = createRouter({
       path: '/tim',
       name: 'team',
       component: () => import('../views/TeamDashboard.vue'),
-      meta: { requiresAuth: true },
+      // /team/* is manager-and-above on the API; without this a plain employee
+      // could deep-link here and get a screen that only renders 403 toasts.
+      meta: { requiresAuth: true, roles: ['manager', 'hr', 'superadmin'] },
     },
     {
       path: '/cuti',
@@ -50,6 +52,10 @@ const router = createRouter({
         { path: 'master', name: 'admin-master', component: () => import('../views/admin/MasterData.vue') },
       ],
     },
+    // Catch-all, must stay last. Without it Vue Router renders an empty
+    // <router-view> for any unknown path -- a blank white page that looks
+    // like a crash instead of a wrong address.
+    { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('../views/NotFound.vue') },
   ],
 })
 
@@ -58,7 +64,10 @@ router.beforeEach((to) => {
   if (to.meta.requiresAuth && !auth.accessToken) {
     return { path: '/login', query: { redirect: to.fullPath } }
   }
-  if (to.path.startsWith('/admin') && !['hr', 'superadmin'].includes(auth.role ?? '')) {
+  // Honour whatever roles a route declares, so a new restricted route only has
+  // to set meta.roles instead of growing another special case here.
+  const allowed = to.meta.roles as string[] | undefined
+  if (allowed && !allowed.includes(auth.role ?? '')) {
     return { path: '/checkin' }
   }
   if (to.path === '/login' && auth.accessToken) {

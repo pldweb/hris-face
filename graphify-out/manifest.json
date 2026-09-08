@@ -320,8 +320,8 @@
     "semantic_hash": "787e8f7b13a6898b9b33e7ea5a5c0d69"
   },
   "web/src/router/index.ts": {
-    "mtime": 1788807471.0915542,
-    "ast_hash": "6f48ed68da6757e220c1018e44811387",
+    "mtime": 1788832768.7972941,
+    "ast_hash": "57bab1a09211f84683fe9f1fdc81b6fe",
     "semantic_hash": ""
   },
   "web/src/stores/auth.ts": {
@@ -340,9 +340,9 @@
     "semantic_hash": ""
   },
   "web/src/views/Enrollment.vue": {
-    "mtime": 1788785982.2459896,
-    "ast_hash": "4f72f7ae821030ab5c3cd79a36a1d064",
-    "semantic_hash": "4f72f7ae821030ab5c3cd79a36a1d064"
+    "mtime": 1788832942.161537,
+    "ast_hash": "8c56a56e980ae4434654cec69c7cd89b",
+    "semantic_hash": ""
   },
   "web/src/views/Login.vue": {
     "mtime": 1788790119.0991163,
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "web/src/views/EmployeeNav.vue": {
-    "mtime": 1788807511.421207,
-    "ast_hash": "56b4c76eb9dfbc339a541eaf8a0768ef",
+    "mtime": 1788832757.0208054,
+    "ast_hash": "78b2d45564d66da40e342d870ee64e7e",
     "semantic_hash": ""
   },
   ".agents/skills/antislop-human/contrast-check.py": {
@@ -617,6 +617,21 @@
   "agent/skills/antislop/SKILL.md": {
     "mtime": 1788806449.8815773,
     "ast_hash": "9209d355634785227ae5b873b37bbcf3",
+    "semantic_hash": ""
+  },
+  "test/e2e/seed_demo.py": {
+    "mtime": 1788832804.8742406,
+    "ast_hash": "fb0456c70fd3c5adbc8b02c158aca9b1",
+    "semantic_hash": ""
+  },
+  "test/e2e/test_all_pages.js": {
+    "mtime": 1788832965.282436,
+    "ast_hash": "ca180e404636b0a3cc2a841f015dda9b",
+    "semantic_hash": ""
+  },
+  "web/src/views/NotFound.vue": {
+    "mtime": 1788832554.3232677,
+    "ast_hash": "773efcd2d1b37b6f96181c26c0b9da0c",
     "semantic_hash": ""
   }
 }
