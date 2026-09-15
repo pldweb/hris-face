@@ -83,14 +83,25 @@ type nameRequest struct {
 	Name string `json:"name" binding:"required"`
 }
 
+type locationRequest struct {
+	Name string `json:"name" binding:"required"`
+	// SetGeofence must be true for Lat/Lng/RadiusMeters to be written at all --
+	// see Service.UpdateLocation. A caller that only cares about the name (the
+	// employee-form quick-add) omits this and the three fields entirely.
+	SetGeofence  bool     `json:"set_geofence"`
+	Lat          *float64 `json:"lat"`
+	Lng          *float64 `json:"lng"`
+	RadiusMeters *int     `json:"radius_meters"`
+}
+
 func createLocationHandler(svc *Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req nameRequest
+		var req locationRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "nama lokasi wajib diisi"})
 			return
 		}
-		out, err := svc.CreateLocation(c.Request.Context(), req.Name)
+		out, err := svc.CreateLocation(c.Request.Context(), req.Name, req.Lat, req.Lng, req.RadiusMeters)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal membuat lokasi"})
 			return
@@ -101,12 +112,12 @@ func createLocationHandler(svc *Service) gin.HandlerFunc {
 
 func updateLocationHandler(svc *Service) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var req nameRequest
+		var req locationRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "nama lokasi wajib diisi"})
 			return
 		}
-		err := svc.UpdateLocation(c.Request.Context(), c.Param("id"), req.Name)
+		err := svc.UpdateLocation(c.Request.Context(), c.Param("id"), req.Name, req.SetGeofence, req.Lat, req.Lng, req.RadiusMeters)
 		if errors.Is(err, ErrNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return

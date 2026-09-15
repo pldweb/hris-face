@@ -50,6 +50,11 @@ type Employee struct {
 	ManagerID        string `json:"manager_id,omitempty"`
 	AnnualLeaveQuota int    `json:"annual_leave_quota"`
 	Status           string `json:"status"`
+	// AllowRemote lets attendance pass the office-network check from anywhere
+	// (internal/attendance/service.go). Defaults to false: a deployment with no
+	// office IP allowlist configured must turn this on per employee, or every
+	// check-in fails "di luar jaringan kantor" regardless of who it is.
+	AllowRemote bool `json:"allow_remote"`
 }
 
 type CreateEmployeeInput struct {
@@ -59,6 +64,7 @@ type CreateEmployeeInput struct {
 	DepartmentID *string
 	LocationID   *string
 	ScheduleID   *string
+	AllowRemote  bool
 }
 
 // UpdateEmployeeInput edits the employee record and, since the login lives in
@@ -79,6 +85,10 @@ type UpdateEmployeeInput struct {
 	ManagerID        *string
 	AnnualLeaveQuota *int
 	Status           *string
+	// AllowRemote is a pointer for the same reason as the other optional
+	// fields: nil leaves the stored value alone, so a partial edit (e.g. just
+	// fixing a typo'd name) cannot silently flip this back off.
+	AllowRemote *bool
 	// Password, when non-empty, resets the employee's login. Empty means
 	// "keep the current password", so the common edit does not touch it.
 	Password string
@@ -94,7 +104,7 @@ func (s *Service) List(ctx context.Context) ([]Employee, error) {
 		SELECT e.id, e.nik, e.full_name, u.email,
 		       COALESCE(e.department_id::text, ''), COALESCE(e.location_id::text, ''),
 		       COALESCE(e.schedule_id::text, ''), COALESCE(e.manager_id::text, ''),
-		       e.annual_leave_quota, e.status
+		       e.annual_leave_quota, e.status, e.allow_remote
 		FROM employees e
 		JOIN users u ON u.id = e.user_id
 		ORDER BY e.full_name`)
@@ -107,7 +117,7 @@ func (s *Service) List(ctx context.Context) ([]Employee, error) {
 	for rows.Next() {
 		var e Employee
 		if err := rows.Scan(&e.ID, &e.NIK, &e.FullName, &e.Email, &e.DepartmentID, &e.LocationID,
-			&e.ScheduleID, &e.ManagerID, &e.AnnualLeaveQuota, &e.Status); err != nil {
+			&e.ScheduleID, &e.ManagerID, &e.AnnualLeaveQuota, &e.Status, &e.AllowRemote); err != nil {
 			return nil, err
 		}
 		out = append(out, e)
@@ -155,7 +165,7 @@ func (s *Service) Create(ctx context.Context, in CreateEmployeeInput) (*CreateEm
 		return nil, err
 	}
 
-	e := Employee{NIK: in.NIK, FullName: in.FullName, Email: in.Email, Status: "pending_enrollment"}
+	e := Employee{NIK: in.NIK, FullName: in.FullName, Email: in.Email, Status: "pending_enrollment", AllowRemote: in.AllowRemote}
 	if in.DepartmentID != nil {
 		e.DepartmentID = *in.DepartmentID
 	}
@@ -166,12 +176,12 @@ func (s *Service) Create(ctx context.Context, in CreateEmployeeInput) (*CreateEm
 		e.LocationID = *in.LocationID
 	}
 	if err := tx.QueryRow(ctx, `
-		INSERT INTO employees (user_id, nik, full_name, department_id, location_id, schedule_id, status)
+		INSERT INTO employees (user_id, nik, full_name, department_id, location_id, schedule_id, status, allow_remote)
 		VALUES ($1, $2, $3, $4, $5,
 			COALESCE($6, (SELECT id FROM work_schedules ORDER BY created_at LIMIT 1)),
-			'pending_enrollment')
+			'pending_enrollment', $7)
 		RETURNING id`,
-		userID, in.NIK, in.FullName, in.DepartmentID, in.LocationID, in.ScheduleID).Scan(&e.ID); err != nil {
+		userID, in.NIK, in.FullName, in.DepartmentID, in.LocationID, in.ScheduleID, in.AllowRemote).Scan(&e.ID); err != nil {
 		return nil, err
 	}
 
@@ -267,10 +277,11 @@ func (s *Service) Update(ctx context.Context, employeeID string, in UpdateEmploy
 		    schedule_id   = CASE WHEN $5::text IS NULL THEN schedule_id   ELSE NULLIF($5, '')::uuid END,
 		    manager_id    = CASE WHEN $6::text IS NULL THEN manager_id    ELSE NULLIF($6, '')::uuid END,
 		    annual_leave_quota = COALESCE($7, annual_leave_quota),
-		    status = COALESCE($8, status)
-		WHERE id = $9`,
+		    status = COALESCE($8, status),
+		    allow_remote = COALESCE($9, allow_remote)
+		WHERE id = $10`,
 		in.FullName, in.NIK, in.DepartmentID, in.LocationID, in.ScheduleID,
-		in.ManagerID, in.AnnualLeaveQuota, in.Status, employeeID); err != nil {
+		in.ManagerID, in.AnnualLeaveQuota, in.Status, in.AllowRemote, employeeID); err != nil {
 		return err
 	}
 

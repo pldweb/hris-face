@@ -5,7 +5,7 @@
 // is a second channel, never the only one (screen readers get aria-live, 10.7).
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { submitAttendance, submitChallenge, CheckInError, type CheckInResult } from '../api/attendance'
+import { submitAttendance, submitChallenge, CheckInError, type CheckInResult, type Coords } from '../api/attendance'
 import { fetchMe, type Me } from '../api/employee'
 import dayjs from '../lib/dayjs'
 import EmployeeNav from './EmployeeNav.vue'
@@ -137,10 +137,28 @@ async function captureBurst(count = 4): Promise<Blob[]> {
   return frames
 }
 
-async function runChallenge(kind: 'check_in' | 'check_out') {
+// Best-effort: resolves to null rather than throwing when geolocation is
+// denied, unsupported, or too slow, so a missing location never blocks the
+// submit itself -- the server decides whether that location's radius makes
+// coordinates mandatory (ErrLocationRequired) or irrelevant.
+function getCoords(): Promise<Coords | null> {
+  return new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve(null)
+      return
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      () => resolve(null),
+      { timeout: 8000, maximumAge: 60000 },
+    )
+  })
+}
+
+async function runChallenge(kind: 'check_in' | 'check_out', coords: Coords | null) {
   submitPhase.value = 'challenge'
   const frames = await captureBurst()
-  result.value = await submitChallenge(kind, frames)
+  result.value = await submitChallenge(kind, frames, coords)
 }
 
 // Normal flow passes no kind (derived from mode); the "ulangi absen" buttons
@@ -152,8 +170,9 @@ async function submitFrame(explicitKind?: 'check_in' | 'check_out') {
   if (!blob) return
 
   submitPhase.value = 'submitting'
+  const coords = await getCoords()
   try {
-    result.value = await submitAttendance(kind, blob)
+    result.value = await submitAttendance(kind, blob, coords)
     submitPhase.value = 'success'
     await loadMe()
     // Return to idle so the next action (check-out) is reachable without a
@@ -169,7 +188,7 @@ async function submitFrame(explicitKind?: 'check_in' | 'check_out') {
     // Escalate to the movement challenge rather than turning them away.
     if (err instanceof CheckInError && err.code === 'challenge_required') {
       try {
-        await runChallenge(kind)
+        await runChallenge(kind, coords)
         submitPhase.value = 'success'
         await loadMe()
         setTimeout(() => {
@@ -224,6 +243,10 @@ function mapErrorMessage(err: CheckInError): string {
       return t('checkin.errorChallengeFailed')
     case 'outside_network':
       return t('checkin.errorOutsideNetwork')
+    case 'outside_radius':
+      return err.message || t('checkin.errorOutsideRadius')
+    case 'location_required':
+      return t('checkin.errorLocationRequired')
     default:
       return 'Terjadi kesalahan. Coba lagi.'
   }

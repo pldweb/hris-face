@@ -13,6 +13,7 @@ export interface Employee {
   manager_id?: string
   annual_leave_quota: number
   status: EmployeeStatus
+  allow_remote: boolean
 }
 
 export interface Department {
@@ -31,6 +32,7 @@ export interface CreateEmployeeInput {
   email: string
   department_id?: string
   location_id?: string
+  allow_remote?: boolean
 }
 
 // Every optional field carries three meanings, matching the API: omitted keeps
@@ -46,6 +48,7 @@ export interface UpdateEmployeeInput {
   manager_id?: string
   annual_leave_quota?: number
   status?: EmployeeStatus
+  allow_remote?: boolean
   /** Non-empty resets the employee's login; omit to leave the password alone. */
   password?: string
 }

@@ -28,6 +28,8 @@ export default {
     errorWrongPerson: 'Wajah ini terdaftar atas nama {name}, bukan akun yang sedang login.',
     errorLiveness: 'Gunakan wajah asli, bukan foto atau layar.',
     errorOutsideNetwork: 'Absen hanya bisa dilakukan dari jaringan kantor. Hubungi HR bila Anda bekerja remote.',
+    errorOutsideRadius: 'Anda di luar radius lokasi kerja.',
+    errorLocationRequired: 'Izinkan akses lokasi di browser untuk absen di lokasi kerja ini.',
     errorNoCheckInYet: 'Belum ada absen masuk hari ini.',
     errorDeviceNotApproved: 'Perangkat ini belum disetujui HR. Hubungi HR untuk mendaftarkannya.',
     errorStillImage: 'Tidak terdeteksi gerakan. Pastikan Anda menghadap kamera langsung, bukan foto.',

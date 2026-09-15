@@ -55,7 +55,7 @@ type ChallengeResult struct {
 //     and recorded, but the 106-point landmark model regresses a plausible eye
 //     shape rather than tracking eyelids, and we have no closed-eye footage to
 //     validate it against. It is a recorded signal, never a gate.
-func (s *Service) RecordWithChallenge(ctx context.Context, kind, userID string, frames [][]byte, deviceKey, userAgent, clientIP string) (*Result, *ChallengeResult, string, error) {
+func (s *Service) RecordWithChallenge(ctx context.Context, kind, userID string, frames [][]byte, deviceKey, userAgent, clientIP string, lat, lng *float64) (*Result, *ChallengeResult, string, error) {
 	if len(frames) < minChallengeFrames {
 		return nil, nil, "", ErrTooFewFrames
 	}
@@ -145,6 +145,10 @@ func (s *Service) RecordWithChallenge(ctx context.Context, kind, userID string, 
 		}
 	}
 
+	if err := s.checkGeofence(ctx, best.employeeID, lat, lng, best.allowRemote); err != nil {
+		return nil, nil, "", err
+	}
+
 	challenge := &ChallengeResult{
 		Frames:         len(analysed),
 		Variation:      variation,
@@ -157,7 +161,7 @@ func (s *Service) RecordWithChallenge(ctx context.Context, kind, userID string, 
 	// caller even if err != nil, for the same reason as record(): resolveDevice
 	// inside commit() already wrote the device row before any business-rule
 	// check could fail.
-	result, issuedKey, err := s.commit(ctx, kind, best, float32(meanLiveness), frames[0], deviceKey, userAgent, clientIP, time.Now())
+	result, issuedKey, err := s.commit(ctx, kind, best, float32(meanLiveness), frames[0], deviceKey, userAgent, clientIP, lat, lng, time.Now())
 	if err != nil {
 		return nil, nil, issuedKey, err
 	}

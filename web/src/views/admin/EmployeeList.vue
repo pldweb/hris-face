@@ -26,6 +26,14 @@ import {
 } from '../../api/masterdata'
 import InlineMasterSelect from './InlineMasterSelect.vue'
 
+// InlineMasterSelect only ever offers a name field, so these adapt the richer
+// masterdata.ts calls (which also carry geofence data for the dedicated
+// editor in MasterData.vue) down to the plain rename InlineMasterSelect can
+// actually do. Omitting `geofence` here is what keeps a quick rename from
+// this form from wiping a radius HR already set up elsewhere.
+const createLocationByName = (name: string) => createLocation({ name })
+const updateLocationByName = (id: string, name: string) => updateLocation(id, { name })
+
 const employees = ref<Employee[]>([])
 const departments = ref<Department[]>([])
 const locations = ref<Location[]>([])
@@ -48,6 +56,7 @@ const form = ref({
   manager_id: undefined as string | undefined,
   annual_leave_quota: 12,
   status: 'pending_enrollment' as EmployeeStatus,
+  allow_remote: false,
 })
 
 // Resetting someone's password is a separate, deliberate act, so it stays
@@ -143,6 +152,7 @@ function openModal() {
     department_id: undefined, location_id: undefined,
     schedule_id: undefined, manager_id: undefined,
     annual_leave_quota: 12, status: 'pending_enrollment',
+    allow_remote: false,
   }
   resetPassword.value = false
   newPassword.value = ''
@@ -161,6 +171,7 @@ function openEditModal(record: Employee) {
     manager_id: record.manager_id,
     annual_leave_quota: record.annual_leave_quota ?? 12,
     status: record.status,
+    allow_remote: record.allow_remote ?? false,
   }
   resetPassword.value = false
   newPassword.value = ''
@@ -207,6 +218,7 @@ async function onSubmit() {
         manager_id: f.manager_id ?? '',
         annual_leave_quota: f.annual_leave_quota,
         status: f.status,
+        allow_remote: f.allow_remote,
         ...(resetPassword.value ? { password: newPassword.value } : {}),
       })
       modalOpen.value = false
@@ -318,8 +330,8 @@ onMounted(loadAll)
             :options="locationOptions"
             placeholder="Pilih lokasi"
             entity-label="lokasi"
-            :create="createLocation"
-            :update="updateLocation"
+            :create="createLocationByName"
+            :update="updateLocationByName"
             @changed="reloadMasterLists"
           />
         </a-form-item>
@@ -354,6 +366,14 @@ onMounted(loadAll)
           </a-row>
           <a-form-item label="Kuota cuti tahunan (hari)">
             <a-input-number v-model:value="form.annual_leave_quota" :min="0" :max="60" style="width: 100%" />
+          </a-form-item>
+
+          <a-form-item>
+            <a-checkbox v-model:checked="form.allow_remote">Izinkan absen dari luar jaringan kantor</a-checkbox>
+            <p class="pw-hint">
+              Wajib dicentang kalau karyawan absen dari HP/lokasi pribadi, bukan dari jaringan kantor.
+              Tanpa ini, absen selalu ditolak dengan pesan "di luar jaringan kantor".
+            </p>
           </a-form-item>
 
           <a-checkbox v-model:checked="resetPassword">Reset password karyawan</a-checkbox>

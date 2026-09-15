@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hris-face/api/internal/middleware"
@@ -11,6 +12,19 @@ import (
 
 const deviceCookieName = "device_id"
 const deviceCookieMaxAge = 5 * 365 * 24 * 3600 // device binding should outlive sessions
+
+// parseLatLng returns nil for either value when it's missing or not a valid
+// float -- a malformed coordinate is treated the same as "no location sent"
+// (checkGeofence's ErrLocationRequired), not a 400: the browser's geolocation
+// API failing silently must not read as a client bug.
+func parseLatLng(latStr, lngStr string) (*float64, *float64) {
+	lat, errLat := strconv.ParseFloat(latStr, 64)
+	lng, errLng := strconv.ParseFloat(lngStr, 64)
+	if errLat != nil || errLng != nil {
+		return nil, nil
+	}
+	return &lat, &lng
+}
 
 func RegisterRoutes(r gin.IRoutes, svc *Service) {
 	r.POST("/attendance/check-in", markHandler(svc, "check_in"))
@@ -67,9 +81,10 @@ func challengeHandler(svc *Service, kind string) gin.HandlerFunc {
 		}
 
 		deviceKey, _ := c.Cookie(deviceCookieName)
+		lat, lng := parseLatLng(c.PostForm("lat"), c.PostForm("lng"))
 		result, challenge, issuedKey, err := svc.RecordWithChallenge(
 			c.Request.Context(), kind, c.GetString("user_id"), frames,
-			deviceKey, c.Request.UserAgent(), c.ClientIP())
+			deviceKey, c.Request.UserAgent(), c.ClientIP(), lat, lng)
 
 		// The cookie is set whenever a device was resolved, BEFORE checking err:
 		// resolveDevice can commit a new approved device row even when the
@@ -108,13 +123,14 @@ func markHandler(svc *Service, kind string) gin.HandlerFunc {
 		userAgent := c.Request.UserAgent()
 
 		userID := c.GetString("user_id")
+		lat, lng := parseLatLng(c.Query("lat"), c.Query("lng"))
 
 		var result *Result
 		var issuedKey string
 		if kind == "check_in" {
-			result, issuedKey, err = svc.CheckIn(c.Request.Context(), userID, imageJPEG, deviceKey, userAgent, c.ClientIP())
+			result, issuedKey, err = svc.CheckIn(c.Request.Context(), userID, imageJPEG, deviceKey, userAgent, c.ClientIP(), lat, lng)
 		} else {
-			result, issuedKey, err = svc.CheckOut(c.Request.Context(), userID, imageJPEG, deviceKey, userAgent, c.ClientIP())
+			result, issuedKey, err = svc.CheckOut(c.Request.Context(), userID, imageJPEG, deviceKey, userAgent, c.ClientIP(), lat, lng)
 		}
 
 		// Set before checking err -- see the comment in challengeHandler. A device
@@ -143,9 +159,12 @@ func markHandler(svc *Service, kind string) gin.HandlerFunc {
 
 func statusFor(err error) int {
 	var wrongPerson *ErrWrongPerson
+	var outsideRadius *ErrOutsideRadius
 	switch {
 	case errors.As(err, &wrongPerson):
 		return http.StatusUnprocessableEntity
+	case errors.As(err, &outsideRadius):
+		return http.StatusForbidden
 	case errors.Is(err, ErrNoFaceMatch), errors.Is(err, ErrLivenessFailed),
 		errors.Is(err, ErrStillImage), errors.Is(err, ErrChallengeFailed):
 		return http.StatusUnprocessableEntity
@@ -155,7 +174,7 @@ func statusFor(err error) int {
 		return http.StatusBadRequest
 	case errors.Is(err, ErrNoCheckInYet):
 		return http.StatusConflict
-	case errors.Is(err, ErrOutsideOfficeNet), errors.Is(err, ErrDeviceNotApproved):
+	case errors.Is(err, ErrOutsideOfficeNet), errors.Is(err, ErrDeviceNotApproved), errors.Is(err, ErrLocationRequired):
 		return http.StatusForbidden
 	case errors.Is(err, ErrNoEmployeeRecord):
 		return http.StatusNotFound
@@ -166,9 +185,14 @@ func statusFor(err error) int {
 
 func messageFor(err error) string {
 	var wrongPerson *ErrWrongPerson
+	var outsideRadius *ErrOutsideRadius
 	switch {
 	case errors.As(err, &wrongPerson):
 		return "Wajah cocok dengan " + wrongPerson.Name + ", bukan akun yang sedang login."
+	case errors.As(err, &outsideRadius):
+		return outsideRadius.Error()
+	case errors.Is(err, ErrLocationRequired):
+		return "Izinkan akses lokasi di browser untuk absen di lokasi kerja ini."
 	case errors.Is(err, ErrNoFaceMatch):
 		return "Wajah tidak dikenali. Coba lagi atau ajukan koreksi manual."
 	case errors.Is(err, ErrLivenessFailed):

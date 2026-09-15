@@ -12,6 +12,17 @@ export interface Schedule {
 export interface Location {
   id: string
   name: string
+  lat?: number
+  lng?: number
+  radius_meters?: number
+}
+
+export interface LocationInput {
+  name: string
+  // Present only when the caller means to write lat/lng/radius (even as
+  // null, to clear them) -- see Service.UpdateLocation on the API side. A
+  // plain rename must never touch a geofence HR already configured elsewhere.
+  geofence?: { lat: number | null; lng: number | null; radius_meters: number | null }
 }
 
 export interface Device {
@@ -42,13 +53,27 @@ export async function listLocations(): Promise<Location[]> {
   return data.data ?? []
 }
 
-export async function createLocation(name: string): Promise<Location> {
-  const { data } = await apiClient.post('/admin/locations', { name })
+function toLocationPayload(input: LocationInput) {
+  return {
+    name: input.name,
+    ...(input.geofence
+      ? {
+          set_geofence: true,
+          lat: input.geofence.lat,
+          lng: input.geofence.lng,
+          radius_meters: input.geofence.radius_meters,
+        }
+      : {}),
+  }
+}
+
+export async function createLocation(input: LocationInput): Promise<Location> {
+  const { data } = await apiClient.post('/admin/locations', toLocationPayload(input))
   return data
 }
 
-export async function updateLocation(id: string, name: string): Promise<void> {
-  await apiClient.put(`/admin/locations/${id}`, { name })
+export async function updateLocation(id: string, input: LocationInput): Promise<void> {
+  await apiClient.put(`/admin/locations/${id}`, toLocationPayload(input))
 }
 
 export async function deleteLocation(id: string): Promise<void> {

@@ -8,10 +8,13 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
+	"math"
 	"net"
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/pgvector/pgvector-go"
 
@@ -32,7 +35,22 @@ var (
 	ErrNoCheckInYet      = errors.New("belum ada absen masuk hari ini")
 	ErrNoEmployeeRecord  = errors.New("akun ini tidak terhubung ke data karyawan")
 	ErrDeviceNotApproved = errors.New("perangkat ini belum disetujui HR")
+	// ErrLocationRequired means the employee's location has a radius configured
+	// but the browser sent no coordinates (permission denied, or a client that
+	// predates this feature).
+	ErrLocationRequired = errors.New("izin lokasi diperlukan untuk lokasi kerja ini")
 )
+
+// ErrOutsideRadius means the reported coordinates are farther from the
+// employee's work location than the configured radius allows.
+type ErrOutsideRadius struct {
+	DistanceMeters float64
+	RadiusMeters   int
+}
+
+func (e *ErrOutsideRadius) Error() string {
+	return fmt.Sprintf("di luar radius lokasi kerja (jarak %.0fm, maksimal %dm)", e.DistanceMeters, e.RadiusMeters)
+}
 
 // ErrWrongPerson is returned when the frame matches an enrolled face, just not
 // the one logged in. Unlike ErrNoFaceMatch it names the employee whose face was
@@ -105,23 +123,25 @@ func (s *Service) Scan(ctx context.Context, imageJPEG []byte) (*FaceScanResult, 
 	return &FaceScanResult{Found: true, FullName: match.fullName, Similarity: match.best}, nil
 }
 
-// CheckIn verifies the frame, enforces network/device rules, derives on_time vs
-// late from the employee's schedule, and records the row.
+// CheckIn verifies the frame, enforces network/location/device rules, derives
+// on_time vs late from the employee's schedule, and records the row. lat/lng
+// are the browser's reported coordinates, nil when geolocation was denied or
+// unavailable -- see checkGeofence for what nil means to the radius check.
 // CheckIn's third return value is the device cookie to set, independent of
 // err: a device can be resolved (and consume a slot) even when the attendance
 // write itself then fails a business rule. The caller must set the cookie
 // whenever this is non-empty, success or not -- see the comment on record().
-func (s *Service) CheckIn(ctx context.Context, userID string, imageJPEG []byte, deviceKey, userAgent, clientIP string) (*Result, string, error) {
-	return s.record(ctx, "check_in", userID, imageJPEG, deviceKey, userAgent, clientIP)
+func (s *Service) CheckIn(ctx context.Context, userID string, imageJPEG []byte, deviceKey, userAgent, clientIP string, lat, lng *float64) (*Result, string, error) {
+	return s.record(ctx, "check_in", userID, imageJPEG, deviceKey, userAgent, clientIP, lat, lng)
 }
 
 // CheckOut requires a check-in earlier the same day and marks early_leave when
 // it happens before the schedule's end time.
-func (s *Service) CheckOut(ctx context.Context, userID string, imageJPEG []byte, deviceKey, userAgent, clientIP string) (*Result, string, error) {
-	return s.record(ctx, "check_out", userID, imageJPEG, deviceKey, userAgent, clientIP)
+func (s *Service) CheckOut(ctx context.Context, userID string, imageJPEG []byte, deviceKey, userAgent, clientIP string, lat, lng *float64) (*Result, string, error) {
+	return s.record(ctx, "check_out", userID, imageJPEG, deviceKey, userAgent, clientIP, lat, lng)
 }
 
-func (s *Service) record(ctx context.Context, kind, userID string, imageJPEG []byte, deviceKey, userAgent, clientIP string) (*Result, string, error) {
+func (s *Service) record(ctx context.Context, kind, userID string, imageJPEG []byte, deviceKey, userAgent, clientIP string, lat, lng *float64) (*Result, string, error) {
 	// The session decides WHO is being recorded; the face only proves that person
 	// is really the one in front of the camera. Identifying by face alone would
 	// let anyone logged in mark a colleague present just by pointing the webcam
@@ -160,12 +180,16 @@ func (s *Service) record(ctx context.Context, kind, userID string, imageJPEG []b
 		return nil, "", ErrOutsideOfficeNet
 	}
 
+	if err := s.checkGeofence(ctx, match.employeeID, lat, lng, match.allowRemote); err != nil {
+		return nil, "", err
+	}
+
 	deviceID, issuedKey, err := s.resolveDevice(ctx, match.employeeID, deviceKey, userAgent)
 	if err != nil {
 		return nil, "", err
 	}
 
-	result, err := s.commitWithDevice(ctx, kind, match, analysis.LivenessScore, imageJPEG, deviceID, clientIP, time.Now())
+	result, err := s.commitWithDevice(ctx, kind, match, analysis.LivenessScore, imageJPEG, deviceID, clientIP, lat, lng, time.Now())
 	// issuedKey surfaces here even when err != nil: resolveDevice already
 	// committed the device row to the database above, so the client must learn
 	// its key regardless of what commitWithDevice does with the attendance rules.
@@ -174,19 +198,66 @@ func (s *Service) record(ctx context.Context, kind, userID string, imageJPEG []b
 
 // commit resolves the device itself; used by the challenge path, which has not
 // touched device binding yet.
-func (s *Service) commit(ctx context.Context, kind string, match *matchResult, liveness float32, imageJPEG []byte, deviceKey, userAgent, clientIP string, now time.Time) (*Result, string, error) {
+func (s *Service) commit(ctx context.Context, kind string, match *matchResult, liveness float32, imageJPEG []byte, deviceKey, userAgent, clientIP string, lat, lng *float64, now time.Time) (*Result, string, error) {
 	deviceID, issuedKey, err := s.resolveDevice(ctx, match.employeeID, deviceKey, userAgent)
 	if err != nil {
 		return nil, "", err
 	}
-	result, err := s.commitWithDevice(ctx, kind, match, liveness, imageJPEG, deviceID, clientIP, now)
+	result, err := s.commitWithDevice(ctx, kind, match, liveness, imageJPEG, deviceID, clientIP, lat, lng, now)
 	return result, issuedKey, err
+}
+
+// checkGeofence enforces the radius configured on the employee's assigned
+// work location, if any. allowRemote bypasses it the same way it bypasses the
+// office-IP check -- one flag for "this person's attendance is not judged by
+// where they physically are". A location with no lat/lng/radius set enforces
+// nothing, so existing locations (created before this feature) stay unaffected.
+func (s *Service) checkGeofence(ctx context.Context, employeeID string, lat, lng *float64, allowRemote bool) error {
+	if allowRemote {
+		return nil
+	}
+	var locLat, locLng pgtype.Float8
+	var radius pgtype.Int4
+	err := s.pool.QueryRow(ctx, `
+		SELECT wl.lat, wl.lng, wl.radius_meters
+		FROM employees e
+		LEFT JOIN work_locations wl ON wl.id = e.location_id
+		WHERE e.id = $1`, employeeID).Scan(&locLat, &locLng, &radius)
+	if err != nil {
+		return err
+	}
+	if !locLat.Valid || !locLng.Valid || !radius.Valid {
+		return nil
+	}
+	if lat == nil || lng == nil {
+		return ErrLocationRequired
+	}
+	distance := haversineMeters(locLat.Float64, locLng.Float64, *lat, *lng)
+	if distance > float64(radius.Int32) {
+		return &ErrOutsideRadius{DistanceMeters: distance, RadiusMeters: int(radius.Int32)}
+	}
+	return nil
+}
+
+// haversineMeters is the great-circle distance between two lat/lng points, in
+// meters. Accurate enough for a single work-site radius check; the earth's
+// oblateness (~0.3% error at this scale) is not worth a heavier ellipsoidal
+// formula for a number that is itself a soft signal, not a hard gate.
+func haversineMeters(lat1, lng1, lat2, lng2 float64) float64 {
+	const earthRadiusMeters = 6371000.0
+	toRad := func(deg float64) float64 { return deg * math.Pi / 180 }
+	dLat := toRad(lat2 - lat1)
+	dLng := toRad(lng2 - lng1)
+	a := math.Sin(dLat/2)*math.Sin(dLat/2) +
+		math.Cos(toRad(lat1))*math.Cos(toRad(lat2))*math.Sin(dLng/2)*math.Sin(dLng/2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+	return earthRadiusMeters * c
 }
 
 // commitWithDevice applies the once-a-day rules, derives the status and writes
 // the row. Both the direct and the challenge path end here so they cannot drift
 // apart on what counts as a duplicate or how status is decided.
-func (s *Service) commitWithDevice(ctx context.Context, kind string, match *matchResult, liveness float32, imageJPEG []byte, deviceID *string, clientIP string, now time.Time) (*Result, error) {
+func (s *Service) commitWithDevice(ctx context.Context, kind string, match *matchResult, liveness float32, imageJPEG []byte, deviceID *string, clientIP string, lat, lng *float64, now time.Time) (*Result, error) {
 	tx, err := s.pool.Begin(ctx)
 	if err != nil {
 		return nil, err
@@ -225,15 +296,16 @@ func (s *Service) commitWithDevice(ctx context.Context, kind string, match *matc
 			UPDATE attendances
 			SET occurred_at = $1, similarity = $2, liveness_score = $3, ip_address = $4,
 			    device_id = $5, status = $6, low_confidence = $7,
-			    photo_path = COALESCE(NULLIF($8, ''), photo_path), source = 'face_rescan'
-			WHERE employee_id = $9 AND type = $10 AND occurred_at::date = CURRENT_DATE`,
-			now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath, match.employeeID, kind)
+			    photo_path = COALESCE(NULLIF($8, ''), photo_path), source = 'face_rescan',
+			    lat = $9, lng = $10
+			WHERE employee_id = $11 AND type = $12 AND occurred_at::date = CURRENT_DATE`,
+			now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath, lat, lng, match.employeeID, kind)
 	} else {
 		_, err = tx.Exec(ctx, `
 			INSERT INTO attendances
-				(employee_id, type, occurred_at, similarity, liveness_score, ip_address, device_id, status, low_confidence, photo_path)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULLIF($10, ''))`,
-			match.employeeID, kind, now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath)
+				(employee_id, type, occurred_at, similarity, liveness_score, ip_address, device_id, status, low_confidence, photo_path, lat, lng)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULLIF($10, ''), $11, $12)`,
+			match.employeeID, kind, now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath, lat, lng)
 	}
 	if err != nil {
 		return nil, err

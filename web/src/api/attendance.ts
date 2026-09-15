@@ -15,11 +15,18 @@ export type CheckInErrorCode =
   | 'liveness'
   | 'no_check_in_yet'
   | 'outside_network'
+  | 'outside_radius'
+  | 'location_required'
   | 'device_not_approved'
   | 'challenge_required'
   | 'still_image'
   | 'challenge_failed'
   | 'unknown'
+
+export interface Coords {
+  lat: number
+  lng: number
+}
 
 export class CheckInError extends Error {
   code: CheckInErrorCode
@@ -36,11 +43,13 @@ export class CheckInError extends Error {
 export async function submitAttendance(
   kind: 'check_in' | 'check_out',
   imageBlob: Blob,
+  coords?: Coords | null,
 ): Promise<CheckInResult> {
   const path = kind === 'check_in' ? '/attendance/check-in' : '/attendance/check-out'
   try {
     const { data } = await apiClient.post<CheckInResult>(path, imageBlob, {
       headers: { 'Content-Type': 'image/jpeg' },
+      params: coords ? { lat: coords.lat, lng: coords.lng } : undefined,
     })
     return data
   } catch (err: any) {
@@ -63,6 +72,12 @@ export async function submitAttendance(
     if (status === 403 && message.includes('Perangkat')) {
       throw new CheckInError('device_not_approved', message)
     }
+    if (status === 403 && message.includes('radius')) {
+      throw new CheckInError('outside_radius', message)
+    }
+    if (status === 403 && message.includes('lokasi')) {
+      throw new CheckInError('location_required', message)
+    }
     if (status === 403) throw new CheckInError('outside_network', message)
     throw new CheckInError('unknown', message)
   }
@@ -73,9 +88,14 @@ export async function submitAttendance(
 export async function submitChallenge(
   kind: 'check_in' | 'check_out',
   frames: Blob[],
+  coords?: Coords | null,
 ): Promise<CheckInResult> {
   const form = new FormData()
   frames.forEach((blob, i) => form.append('frames', blob, `frame-${i}.jpg`))
+  if (coords) {
+    form.append('lat', String(coords.lat))
+    form.append('lng', String(coords.lng))
+  }
   const path = kind === 'check_in' ? '/attendance/challenge/check-in' : '/attendance/challenge/check-out'
   try {
     const { data } = await apiClient.post(path, form)
@@ -90,6 +110,12 @@ export async function submitChallenge(
     }
     if (status === 422) throw new CheckInError('challenge_failed', message)
     if (status === 409) throw new CheckInError('no_check_in_yet', message)
+    if (status === 403 && message.includes('radius')) {
+      throw new CheckInError('outside_radius', message)
+    }
+    if (status === 403 && message.includes('lokasi')) {
+      throw new CheckInError('location_required', message)
+    }
     if (status === 403) throw new CheckInError('outside_network', message)
     throw new CheckInError('unknown', message)
   }

@@ -57,6 +57,7 @@ type createEmployeeRequest struct {
 	Email        string  `json:"email" binding:"required,email"`
 	DepartmentID *string `json:"department_id"`
 	LocationID   *string `json:"location_id"`
+	AllowRemote  bool    `json:"allow_remote"`
 }
 
 func createHandler(svc *Service) gin.HandlerFunc {
@@ -70,6 +71,7 @@ func createHandler(svc *Service) gin.HandlerFunc {
 		result, err := svc.Create(c.Request.Context(), CreateEmployeeInput{
 			NIK: req.NIK, FullName: req.FullName, Email: req.Email,
 			DepartmentID: req.DepartmentID, LocationID: req.LocationID,
+			AllowRemote: req.AllowRemote,
 		})
 		if err != nil {
 			switch {
@@ -100,6 +102,7 @@ type updateEmployeeRequest struct {
 	ManagerID        *string `json:"manager_id"`
 	AnnualLeaveQuota *int    `json:"annual_leave_quota"`
 	Status           *string `json:"status"`
+	AllowRemote      *bool   `json:"allow_remote"`
 	Password         string  `json:"password"`
 }
 
@@ -116,7 +119,8 @@ func updateHandler(svc *Service) gin.HandlerFunc {
 			DepartmentID: req.DepartmentID, LocationID: req.LocationID,
 			ScheduleID: req.ScheduleID, ManagerID: req.ManagerID,
 			AnnualLeaveQuota: req.AnnualLeaveQuota, Status: req.Status,
-			Password: req.Password,
+			AllowRemote: req.AllowRemote,
+			Password:    req.Password,
 		})
 		switch {
 		case err == nil:

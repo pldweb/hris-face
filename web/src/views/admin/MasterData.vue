@@ -49,8 +49,31 @@ const deletingDepartmentId = ref<string | null>(null)
 const locationModal = ref(false)
 const editingLocationId = ref<string | null>(null)
 const locationSubmitting = ref(false)
-const locationForm = ref({ name: '' })
+const locationForm = ref({ name: '', lat: null as number | null, lng: null as number | null, radius_meters: null as number | null })
 const deletingLocationId = ref<string | null>(null)
+const locatingGps = ref(false)
+
+// Convenience for whoever is setting up the location (HR standing at the
+// site with their own phone) -- fills lat/lng from the browser rather than
+// making them look coordinates up manually.
+function useMyLocation() {
+  if (!navigator.geolocation) {
+    message.error('Browser ini tidak mendukung geolocation')
+    return
+  }
+  locatingGps.value = true
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      locationForm.value.lat = Number(pos.coords.latitude.toFixed(6))
+      locationForm.value.lng = Number(pos.coords.longitude.toFixed(6))
+      locatingGps.value = false
+    },
+    () => {
+      message.error('Gagal membaca lokasi. Pastikan izin lokasi diaktifkan.')
+      locatingGps.value = false
+    },
+  )
+}
 
 const DAY_LABELS = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']
 
@@ -113,7 +136,7 @@ async function onSubmitSchedule() {
 async function onAddLocation() {
   if (!newLocation.value.trim()) return
   try {
-    await createLocation(newLocation.value.trim())
+    await createLocation({ name: newLocation.value.trim() })
     newLocation.value = ''
     load()
   } catch {
@@ -172,7 +195,12 @@ async function onDeleteDepartment(dept: Department) {
 
 function openEditLocation(loc: Location) {
   editingLocationId.value = loc.id
-  locationForm.value = { name: loc.name }
+  locationForm.value = {
+    name: loc.name,
+    lat: loc.lat ?? null,
+    lng: loc.lng ?? null,
+    radius_meters: loc.radius_meters ?? null,
+  }
   locationModal.value = true
 }
 
@@ -181,10 +209,22 @@ async function onSubmitLocation() {
     message.error('Nama lokasi wajib diisi')
     return
   }
+  // Partial coordinates can never resolve to a usable circle, and silently
+  // saving them as "no radius" would make the checkbox in CheckIn's error
+  // message lie about why absen is being rejected.
+  const { lat, lng, radius_meters } = locationForm.value
+  const filled = [lat, lng, radius_meters].filter((v) => v !== null).length
+  if (filled > 0 && filled < 3) {
+    message.error('Isi lat, lng, dan radius bertiga, atau kosongkan ketiganya')
+    return
+  }
   if (!editingLocationId.value) return
   locationSubmitting.value = true
   try {
-    await updateLocation(editingLocationId.value, locationForm.value.name.trim())
+    await updateLocation(editingLocationId.value, {
+      name: locationForm.value.name.trim(),
+      geofence: { lat, lng, radius_meters },
+    })
     locationModal.value = false
     message.success('Lokasi disimpan')
     load()
@@ -394,6 +434,21 @@ async function onApprove(device: Device) {
       <a-form layout="vertical">
         <a-form-item label="Nama lokasi">
           <a-input v-model:value="locationForm.name" placeholder="Nama lokasi" @press-enter="onSubmitLocation" />
+        </a-form-item>
+        <a-form-item label="Radius absen (opsional)">
+          <p class="hint">
+            Kosongkan ketiganya untuk tidak membatasi lokasi absen di sini.
+            Isi semua untuk mewajibkan karyawan berada dalam radius ini saat absen
+            (kecuali yang diizinkan remote).
+          </p>
+          <a-space direction="vertical" style="width: 100%">
+            <a-space>
+              <a-input-number v-model:value="locationForm.lat" placeholder="Lat" :precision="6" style="width: 140px" />
+              <a-input-number v-model:value="locationForm.lng" placeholder="Lng" :precision="6" style="width: 140px" />
+              <a-input-number v-model:value="locationForm.radius_meters" placeholder="Radius (m)" :min="10" style="width: 130px" />
+            </a-space>
+            <a-button size="small" :loading="locatingGps" @click="useMyLocation">Pakai lokasi saya sekarang</a-button>
+          </a-space>
         </a-form-item>
       </a-form>
     </a-modal>

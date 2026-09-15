@@ -190,5 +190,32 @@ status, body = req("PUT", "/admin/attendances/00000000-0000-0000-0000-0000000000
                     {"occurred_at": "2026-01-01T08:00:00+07:00"}, token=hr_token)
 check("edit absensi tak ada -> 404", status == 404, f"got {status} {body}")
 
+print("\n=== GEOFENCE LOKASI ===")
+status, body = req("POST", "/admin/locations",
+                    {"name": "Kantor Geofence Test", "set_geofence": True,
+                     "lat": -6.2, "lng": 106.8, "radius_meters": 150}, token=hr_token)
+check("lokasi dengan geofence dibuat", status == 201, f"got {status} {body}")
+geo_loc = body
+
+# InlineMasterSelect's plain-rename path (no set_geofence) must never wipe a
+# radius someone configured through the dedicated location editor -- this is
+# the exact bug shape the set_geofence flag exists to prevent.
+status, body = req("PUT", f"/admin/locations/{geo_loc['id']}", {"name": "Kantor Geofence Test (rename)"}, token=hr_token)
+check("rename tanpa set_geofence berhasil", status == 200, f"got {status} {body}")
+status, body = req("GET", "/admin/locations", token=hr_token)
+after_rename = next((l for l in body.get("data", []) if l["id"] == geo_loc["id"]), None)
+check("rename tidak menghapus lat/lng/radius yang sudah diset",
+      after_rename is not None and after_rename.get("radius_meters") == 150
+      and after_rename.get("lat") == -6.2, f"got {after_rename}")
+
+# set_geofence=True eksplisit boleh mengosongkan radius (HR sengaja mencabutnya).
+status, body = req("PUT", f"/admin/locations/{geo_loc['id']}",
+                    {"name": after_rename["name"], "set_geofence": True,
+                     "lat": None, "lng": None, "radius_meters": None}, token=hr_token)
+check("set_geofence=true dengan null mengosongkan radius", status == 200, f"got {status} {body}")
+status, body = req("GET", "/admin/locations", token=hr_token)
+cleared = next((l for l in body.get("data", []) if l["id"] == geo_loc["id"]), None)
+check("radius benar-benar kosong setelah dikosongkan", cleared is not None and cleared.get("radius_meters") is None, f"got {cleared}")
+
 print(f"\n{'='*46}\nPASS: {passed}   FAIL: {failed}\n{'='*46}")
 sys.exit(1 if failed else 0)

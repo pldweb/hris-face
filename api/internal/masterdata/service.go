@@ -88,12 +88,15 @@ func (s *Service) UpdateSchedule(ctx context.Context, id string, in Schedule) er
 }
 
 type Location struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID           string   `json:"id"`
+	Name         string   `json:"name"`
+	Lat          *float64 `json:"lat,omitempty"`
+	Lng          *float64 `json:"lng,omitempty"`
+	RadiusMeters *int     `json:"radius_meters,omitempty"`
 }
 
 func (s *Service) ListLocations(ctx context.Context) ([]Location, error) {
-	rows, err := s.pool.Query(ctx, `SELECT id, name FROM work_locations ORDER BY name`)
+	rows, err := s.pool.Query(ctx, `SELECT id, name, lat, lng, radius_meters FROM work_locations ORDER BY name`)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +105,7 @@ func (s *Service) ListLocations(ctx context.Context) ([]Location, error) {
 	out := []Location{}
 	for rows.Next() {
 		var l Location
-		if err := rows.Scan(&l.ID, &l.Name); err != nil {
+		if err := rows.Scan(&l.ID, &l.Name, &l.Lat, &l.Lng, &l.RadiusMeters); err != nil {
 			return nil, err
 		}
 		out = append(out, l)
@@ -110,17 +113,31 @@ func (s *Service) ListLocations(ctx context.Context) ([]Location, error) {
 	return out, rows.Err()
 }
 
-func (s *Service) CreateLocation(ctx context.Context, name string) (*Location, error) {
-	l := Location{Name: name}
+func (s *Service) CreateLocation(ctx context.Context, name string, lat, lng *float64, radiusMeters *int) (*Location, error) {
+	l := Location{Name: name, Lat: lat, Lng: lng, RadiusMeters: radiusMeters}
 	if err := s.pool.QueryRow(ctx,
-		`INSERT INTO work_locations (name) VALUES ($1) RETURNING id`, name).Scan(&l.ID); err != nil {
+		`INSERT INTO work_locations (name, lat, lng, radius_meters) VALUES ($1, $2, $3, $4) RETURNING id`,
+		name, lat, lng, radiusMeters).Scan(&l.ID); err != nil {
 		return nil, err
 	}
 	return &l, nil
 }
 
-func (s *Service) UpdateLocation(ctx context.Context, id, name string) error {
-	tag, err := s.pool.Exec(ctx, `UPDATE work_locations SET name = $1 WHERE id = $2`, name, id)
+// UpdateLocation only touches lat/lng/radius_meters when setGeofence is true.
+// A plain rename (InlineMasterSelect's quick-add-from-employee-form, which has
+// no geofence UI at all) must never wipe a radius HR already configured
+// through the dedicated location editor -- a bare *float64 can't tell "not
+// sent" from "sent as null", so the caller has to say which it means.
+func (s *Service) UpdateLocation(ctx context.Context, id, name string, setGeofence bool, lat, lng *float64, radiusMeters *int) error {
+	var tag pgconn.CommandTag
+	var err error
+	if setGeofence {
+		tag, err = s.pool.Exec(ctx,
+			`UPDATE work_locations SET name = $1, lat = $2, lng = $3, radius_meters = $4 WHERE id = $5`,
+			name, lat, lng, radiusMeters, id)
+	} else {
+		tag, err = s.pool.Exec(ctx, `UPDATE work_locations SET name = $1 WHERE id = $2`, name, id)
+	}
 	if err != nil {
 		return err
 	}
