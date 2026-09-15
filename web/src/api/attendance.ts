@@ -11,8 +11,8 @@ export interface CheckInResult {
 
 export type CheckInErrorCode =
   | 'no_match'
+  | 'wrong_person'
   | 'liveness'
-  | 'already_marked'
   | 'no_check_in_yet'
   | 'outside_network'
   | 'device_not_approved'
@@ -23,9 +23,11 @@ export type CheckInErrorCode =
 
 export class CheckInError extends Error {
   code: CheckInErrorCode
-  constructor(code: CheckInErrorCode, message: string) {
+  matchedName?: string
+  constructor(code: CheckInErrorCode, message: string, matchedName?: string) {
     super(message)
     this.code = code
+    this.matchedName = matchedName
   }
 }
 
@@ -44,6 +46,8 @@ export async function submitAttendance(
   } catch (err: any) {
     const status = err?.response?.status
     const message = err?.response?.data?.error ?? 'Terjadi kesalahan'
+    const matchedName = err?.response?.data?.matched_name as string | undefined
+    if (matchedName) throw new CheckInError('wrong_person', message, matchedName)
     if (status === 422 && message.includes('Gunakan wajah asli')) {
       throw new CheckInError('liveness', message)
     }
@@ -55,10 +59,7 @@ export async function submitAttendance(
       throw new CheckInError('challenge_failed', message)
     }
     if (status === 422) throw new CheckInError('no_match', message)
-    if (status === 409 && message.includes('Belum ada absen masuk')) {
-      throw new CheckInError('no_check_in_yet', message)
-    }
-    if (status === 409) throw new CheckInError('already_marked', message)
+    if (status === 409) throw new CheckInError('no_check_in_yet', message)
     if (status === 403 && message.includes('Perangkat')) {
       throw new CheckInError('device_not_approved', message)
     }
@@ -82,11 +83,13 @@ export async function submitChallenge(
   } catch (err: any) {
     const status = err?.response?.status
     const message = err?.response?.data?.error ?? 'Terjadi kesalahan'
+    const matchedName = err?.response?.data?.matched_name as string | undefined
+    if (matchedName) throw new CheckInError('wrong_person', message, matchedName)
     if (status === 422 && message.includes('Tidak terdeteksi gerakan')) {
       throw new CheckInError('still_image', message)
     }
     if (status === 422) throw new CheckInError('challenge_failed', message)
-    if (status === 409) throw new CheckInError('already_marked', message)
+    if (status === 409) throw new CheckInError('no_check_in_yet', message)
     if (status === 403) throw new CheckInError('outside_network', message)
     throw new CheckInError('unknown', message)
   }

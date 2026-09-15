@@ -28,12 +28,24 @@ const (
 var (
 	ErrNoFaceMatch       = errors.New("wajah tidak dikenali")
 	ErrLivenessFailed    = errors.New("verifikasi keaslian wajah gagal")
-	ErrAlreadyMarked     = errors.New("sudah absen untuk sesi ini")
 	ErrOutsideOfficeNet  = errors.New("di luar jaringan kantor")
 	ErrNoCheckInYet      = errors.New("belum ada absen masuk hari ini")
 	ErrNoEmployeeRecord  = errors.New("akun ini tidak terhubung ke data karyawan")
 	ErrDeviceNotApproved = errors.New("perangkat ini belum disetujui HR")
 )
+
+// ErrWrongPerson is returned when the frame matches an enrolled face, just not
+// the one logged in. Unlike ErrNoFaceMatch it names the employee whose face was
+// recognised, at the requester's request -- this intentionally surfaces another
+// employee's identity to whoever is holding the camera, with no enrollment
+// consent check, so any future report of it being misused should point here.
+type ErrWrongPerson struct {
+	Name string
+}
+
+func (e *ErrWrongPerson) Error() string {
+	return "wajah cocok dengan karyawan lain: " + e.Name
+}
 
 type Service struct {
 	pool        *pgxpool.Pool
@@ -136,10 +148,11 @@ func (s *Service) record(ctx context.Context, kind, userID string, imageJPEG []b
 	if err != nil {
 		return nil, "", err
 	}
-	// A face that matches someone else is reported as "not recognised", never as
-	// "that is Budi" -- the response must not confirm another employee's identity.
-	if match == nil || match.best < matchThreshold || match.employeeID != sessionEmployeeID {
+	if match == nil || match.best < matchThreshold {
 		return nil, "", ErrNoFaceMatch
+	}
+	if match.employeeID != sessionEmployeeID {
+		return nil, "", &ErrWrongPerson{Name: match.fullName}
 	}
 
 	onSite := s.isOfficeIP(clientIP)
@@ -174,23 +187,30 @@ func (s *Service) commit(ctx context.Context, kind string, match *matchResult, l
 // the row. Both the direct and the challenge path end here so they cannot drift
 // apart on what counts as a duplicate or how status is decided.
 func (s *Service) commitWithDevice(ctx context.Context, kind string, match *matchResult, liveness float32, imageJPEG []byte, deviceID *string, clientIP string, now time.Time) (*Result, error) {
+	tx, err := s.pool.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx) //nolint:errcheck
+	// Serialises submits for one employee: auto-capture and a button click can
+	// land together, and without the lock both read "not yet marked" and insert.
+	// todayMarks runs after the lock is held, so it sees the other request's commit.
+	if _, err := tx.Exec(ctx, `SELECT 1 FROM employees WHERE id = $1 FOR UPDATE`, match.employeeID); err != nil {
+		return nil, err
+	}
+
 	checkedIn, checkedOut, err := s.todayMarks(ctx, match.employeeID)
 	if err != nil {
 		return nil, err
 	}
-	switch kind {
-	case "check_in":
-		if checkedIn {
-			return nil, ErrAlreadyMarked
-		}
-	case "check_out":
-		if !checkedIn {
-			return nil, ErrNoCheckInYet
-		}
-		if checkedOut {
-			return nil, ErrAlreadyMarked
-		}
+	if kind == "check_out" && !checkedIn {
+		return nil, ErrNoCheckInYet
 	}
+	// Presensi ulang: scanning again for a session already recorded today
+	// overwrites that row instead of being rejected, at the employee's own
+	// request and with no HR review -- source='face_rescan' is the only trace
+	// that the original timestamp was replaced.
+	rescan := (kind == "check_in" && checkedIn) || (kind == "check_out" && checkedOut)
 
 	status, err := s.deriveStatus(ctx, match.employeeID, kind, now)
 	if err != nil {
@@ -200,12 +220,25 @@ func (s *Service) commitWithDevice(ctx context.Context, kind string, match *matc
 	lowConfidence := (match.best - match.second) < lowConfidenceMarginGap
 	photoPath := s.photos.Save(match.employeeID, now, imageJPEG)
 
-	_, err = s.pool.Exec(ctx, `
-		INSERT INTO attendances
-			(employee_id, type, occurred_at, similarity, liveness_score, ip_address, device_id, status, low_confidence, photo_path)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULLIF($10, ''))`,
-		match.employeeID, kind, now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath)
+	if rescan {
+		_, err = tx.Exec(ctx, `
+			UPDATE attendances
+			SET occurred_at = $1, similarity = $2, liveness_score = $3, ip_address = $4,
+			    device_id = $5, status = $6, low_confidence = $7,
+			    photo_path = COALESCE(NULLIF($8, ''), photo_path), source = 'face_rescan'
+			WHERE employee_id = $9 AND type = $10 AND occurred_at::date = CURRENT_DATE`,
+			now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath, match.employeeID, kind)
+	} else {
+		_, err = tx.Exec(ctx, `
+			INSERT INTO attendances
+				(employee_id, type, occurred_at, similarity, liveness_score, ip_address, device_id, status, low_confidence, photo_path)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULLIF($10, ''))`,
+			match.employeeID, kind, now, match.best, liveness, clientIP, deviceID, status, lowConfidence, photoPath)
+	}
 	if err != nil {
+		return nil, err
+	}
+	if err := tx.Commit(ctx); err != nil {
 		return nil, err
 	}
 

@@ -1,0 +1,10 @@
+[Unit]
+Description=Run HRIS database backup daily
+
+[Timer]
+# Before the 07:00-09:00 rush (PRODUCT.md), well after any midnight batch jobs.
+OnCalendar=*-*-* 02:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

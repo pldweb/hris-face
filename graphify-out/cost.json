@@ -1,0 +1,13 @@
+{
+  "runs": [
+    {
+      "date": "2026-09-15T13:20:44.333446+00:00",
+      "input_tokens": 164417,
+      "output_tokens": 0,
+      "files": 90,
+      "note": "incremental update; semantic doc chunk discarded (too sparse), code-only merge kept"
+    }
+  ],
+  "total_input_tokens": 164417,
+  "total_output_tokens": 0
+}

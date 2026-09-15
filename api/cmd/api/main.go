@@ -55,6 +55,14 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	r := gin.New()
+	// Only Caddy (same host, 127.0.0.1) may set X-Forwarded-For. Without this,
+	// gin trusts the header from ANY client -- and c.ClientIP() is what
+	// attendance's office-network check (internal/attendance/service.go) trusts,
+	// so an untrusted proxy setting would let anyone spoof "on the office LAN"
+	// from anywhere by sending their own X-Forwarded-For.
+	if err := r.SetTrustedProxies([]string{"127.0.0.1", "::1"}); err != nil {
+		log.Fatal(err)
+	}
 	r.Use(gin.Recovery(), middleware.Logger())
 
 	r.GET("/healthz", func(c *gin.Context) {

@@ -4,7 +4,10 @@ import (
 	"context"
 	"errors"
 	"math"
+	"sync"
 	"time"
+
+	"github.com/hris-face/api/internal/faceclient"
 )
 
 const (
@@ -14,6 +17,8 @@ const (
 	challengeFloor = 0.15
 
 	minChallengeFrames = 3
+	// Frames are analysed concurrently, so this caps face-service calls per request.
+	maxChallengeFrames = 8
 	// Mean absolute difference between two 8x8 face thumbnails, 0-255 scale.
 	// Below this the frames are the same picture: a still held to the camera,
 	// or a paused video.
@@ -67,9 +72,20 @@ func (s *Service) RecordWithChallenge(ctx context.Context, kind, userID string, 
 		signature []int
 	}
 
+	if len(frames) > maxChallengeFrames {
+		frames = frames[:maxChallengeFrames]
+	}
+	results := make([]*faceclient.AnalyzeResult, len(frames))
+	errs := make([]error, len(frames))
+	var wg sync.WaitGroup
+	for i, f := range frames {
+		wg.Go(func() { results[i], errs[i] = s.face.Analyze(f) })
+	}
+	wg.Wait()
+
 	analysed := make([]frameData, 0, len(frames))
-	for _, f := range frames {
-		a, err := s.face.Analyze(f)
+	for i := range frames {
+		a, err := results[i], errs[i]
 		if err != nil {
 			return nil, nil, "", err
 		}
@@ -118,8 +134,11 @@ func (s *Service) RecordWithChallenge(ctx context.Context, kind, userID string, 
 		if err != nil {
 			return nil, nil, "", err
 		}
-		if m == nil || m.best < matchThreshold || m.employeeID != sessionEmployeeID {
+		if m == nil || m.best < matchThreshold {
 			return nil, nil, "", ErrNoFaceMatch
+		}
+		if m.employeeID != sessionEmployeeID {
+			return nil, nil, "", &ErrWrongPerson{Name: m.fullName}
 		}
 		if best == nil || m.best > best.best {
 			best = m

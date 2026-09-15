@@ -67,7 +67,14 @@ Lihat `deploy/deploy.sh` dan `docs/PRD.md` bagian 11. Ringkas:
 HRIS_HOST=deploy@hris.perusahaan.com ./deploy/deploy.sh
 ```
 
-Sekali di VPS: install Caddy, PostgreSQL 16 + pgvector, salin `deploy/*.service` ke `/etc/systemd/system/`, `deploy/Caddyfile` ke `/etc/caddy/Caddyfile`, `deploy/api.env.example` ke `/etc/hris/api.env` (isi nilainya), lalu `systemctl enable --now hris-api hris-face caddy`.
+Sekali di VPS: install Caddy, PostgreSQL 16 + pgvector, salin `deploy/*.service` dan `deploy/hris-backup.timer` ke `/etc/systemd/system/`, `deploy/Caddyfile` ke `/etc/caddy/Caddyfile`, `deploy/backup.sh` ke `/opt/hris/backup.sh` (`chmod +x`), `deploy/api.env.example` ke `/etc/hris/api.env` (isi nilainya, termasuk `BACKUP_REMOTE`), lalu `systemctl enable --now hris-api hris-face caddy hris-backup.timer`.
+
+Model anti-spoof tidak divendorkan (lihat `face/README.md`) — sekali di VPS, sebelum deploy pertama:
+```bash
+cd /opt/hris/face && .venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu onnxscript
+cd /opt/hris/face && .venv/bin/python scripts/export_antispoof_onnx.py
+```
+`deploy.sh` menolak me-restart `hris-face` kalau file ini belum ada, daripada membiarkan service crash-loop diam-diam.
 
 ## Status
 

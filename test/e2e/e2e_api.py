@@ -257,8 +257,10 @@ check("check-in mengembalikan nama yang benar", body.get("full_name") == "Andi P
 check("check-in mengembalikan status kehadiran", body.get("status") in ("on_time", "late"), f"got {body}")
 andi_checkin_status = body.get("status")
 
+first_checkin_at = body.get("occurred_at")
 status, body, _ = request("POST", "/attendance/check-in", token=andi_token, raw=face("A2"), content_type="image/jpeg", cookie=andi_device)
-check("check-in kedua di hari sama ditolak 409", status == 409, f"got {status} {body}")
+check("presensi ulang: check-in kedua di hari sama diterima (menimpa)", status == 200, f"got {status} {body}")
+check("presensi ulang: jam check-in berubah", body.get("occurred_at") != first_checkin_at, f"got {body}")
 
 status, body, _ = request("POST", "/attendance/check-in", token=budi_token, raw=face("B2"), content_type="image/jpeg")
 check("karyawan kedua bisa check-in (tidak tertukar)", status == 200 and body.get("full_name") == "Budi Santoso", f"got {status} {body}")
@@ -284,11 +286,14 @@ print("\n=== IDENTITAS SESI vs WAJAH ===")
 status, body, _ = request("POST", "/attendance/check-out", token=hr_token, raw=face("A2"), content_type="image/jpeg")
 check("akun tanpa data karyawan ditolak 404", status == 404, f"got {status} {body}")
 
-# Budi yang login, tapi wajah Andi di depan kamera: harus ditolak, dan tidak
-# boleh membocorkan bahwa itu wajah Andi.
+# Budi yang login, tapi wajah Andi di depan kamera: absennya tetap ditolak
+# (tidak bisa titip absen -- sesi menentukan siapa, wajah cuma verifikasi),
+# tapi sejak keputusan produk terbaru pesan penolakan BOLEH menyebut nama
+# pemilik wajah yang terdeteksi.
 status, body, _ = request("POST", "/attendance/check-out", token=budi_token, raw=face("A2"), content_type="image/jpeg")
-check("wajah orang lain di sesi sendiri ditolak", status == 422, f"got {status} {body}")
-check("penolakan tidak menyebut nama orang lain", "Andi" not in json.dumps(body), f"got {body}")
+check("wajah orang lain di sesi sendiri tetap ditolak (anti titip-absen)", status == 422, f"got {status} {body}")
+check("penolakan menyebut nama pemilik wajah yang terdeteksi",
+      body.get("matched_name") == "Andi Pratama", f"got {body}")
 
 print("\n=== CHECK-OUT ===")
 
@@ -298,8 +303,10 @@ check("check-out bertipe check_out", body.get("type") == "check_out", f"got {bod
 check("check-out sebelum jam pulang = early_leave",
       body.get("status") in ("early_leave", "on_time"), f"got {body}")
 
+first_checkout_at = body.get("occurred_at")
 status, body, _ = request("POST", "/attendance/check-out", token=andi_token, raw=face("A2"), content_type="image/jpeg", cookie=andi_device)
-check("check-out kedua ditolak 409", status == 409, f"got {status} {body}")
+check("presensi ulang: check-out kedua diterima (menimpa)", status == 200, f"got {status} {body}")
+check("presensi ulang: jam check-out berubah", body.get("occurred_at") != first_checkout_at, f"got {body}")
 
 status, body, _ = request("GET", "/me", token=andi_token)
 check("/me menampilkan jam masuk dan pulang", bool(body.get("check_in_at")) and bool(body.get("check_out_at")), f"got {body}")
@@ -577,6 +584,21 @@ status, body, _ = request("GET", "/admin/devices", token=hr_token)
 mine = [d for d in body.get("data", []) if d.get("full_name") == "Cookie Tester"]
 check("hanya SATU perangkat tercatat meski dua percobaan gagal", len(mine) == 1, f"got {mine}")
 check("perangkat itu langsung disetujui (bukan menunggu HR)", mine and mine[0].get("approved") is True, f"got {mine}")
+
+print("\n=== PRESENSI GANDA BERSAMAAN ===")
+# Auto-capture + klik bisa tiba bersamaan; tanpa kunci baris keduanya menyisipkan baris baru.
+import concurrent.futures
+
+def _checkout(_):
+    return request("POST", "/attendance/check-out", token=cookie_token, raw=face("D2"),
+                   content_type="image/jpeg", cookie=device_cookie)[0]
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+    statuses = list(pool.map(_checkout, range(2)))
+check("dua check-out bersamaan sama-sama diterima", statuses == [200, 200], f"got {statuses}")
+status, body, _ = request("GET", "/admin/attendances?limit=200", token=hr_token)
+outs = [r for r in body.get("data", []) if r.get("full_name") == "Cookie Tester" and r.get("type") == "check_out"]
+check("hanya SATU baris check-out tercatat", len(outs) == 1, f"got {len(outs)} rows: {outs}")
 
 print(f"\n{'='*46}\nPASS: {passed}   FAIL: {failed}\n{'='*46}")
 sys.exit(1 if failed else 0)

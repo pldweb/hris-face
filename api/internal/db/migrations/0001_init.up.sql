@@ -86,7 +86,7 @@ CREATE TABLE attendances (
     device_id      uuid REFERENCES devices(id),
     photo_path     text,
     status         text NOT NULL, -- on_time | late | early_leave | absent
-    source         text NOT NULL DEFAULT 'face', -- face | manual_correction
+    source         text NOT NULL DEFAULT 'face', -- face | manual_correction | face_rescan
     low_confidence boolean NOT NULL DEFAULT false,
     created_at     timestamptz NOT NULL DEFAULT now()
 );

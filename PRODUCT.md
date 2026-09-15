@@ -23,4 +23,4 @@ Karyawan membuktikan kehadirannya dengan wajahnya sendiri, di depan laptop kerja
 Absensi wajah gampang terasa seperti pengawasan. Kalau UI-nya main-main (emoji, animasi lucu, copy kasual) itu terasa meremehkan sesuatu yang menyangkut gaji orang. Kalau UI-nya dingin dan penuh peringatan, terasa seperti alat curiga. Nada yang benar: tenang, tegas, dan jelas soal apa yang direkam.
 
 ## Bukan tujuan (rilis 1)
-Payroll, cuti/approval workflow, mobile app, shift rotasi, integrasi mesin fingerprint lama.
+Payroll, mobile app, shift rotasi, integrasi mesin fingerprint lama.

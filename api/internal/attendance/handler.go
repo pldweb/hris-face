@@ -84,7 +84,12 @@ func challengeHandler(svc *Service, kind string) gin.HandlerFunc {
 		}
 
 		if err != nil {
-			c.JSON(statusFor(err), gin.H{"error": messageFor(err)})
+			body := gin.H{"error": messageFor(err)}
+			var wrongPerson *ErrWrongPerson
+			if errors.As(err, &wrongPerson) {
+				body["matched_name"] = wrongPerson.Name
+			}
+			c.JSON(statusFor(err), body)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"result": result, "challenge": challenge})
@@ -123,7 +128,12 @@ func markHandler(svc *Service, kind string) gin.HandlerFunc {
 		}
 
 		if err != nil {
-			c.JSON(statusFor(err), gin.H{"error": messageFor(err)})
+			body := gin.H{"error": messageFor(err)}
+			var wrongPerson *ErrWrongPerson
+			if errors.As(err, &wrongPerson) {
+				body["matched_name"] = wrongPerson.Name
+			}
+			c.JSON(statusFor(err), body)
 			return
 		}
 
@@ -132,7 +142,10 @@ func markHandler(svc *Service, kind string) gin.HandlerFunc {
 }
 
 func statusFor(err error) int {
+	var wrongPerson *ErrWrongPerson
 	switch {
+	case errors.As(err, &wrongPerson):
+		return http.StatusUnprocessableEntity
 	case errors.Is(err, ErrNoFaceMatch), errors.Is(err, ErrLivenessFailed),
 		errors.Is(err, ErrStillImage), errors.Is(err, ErrChallengeFailed):
 		return http.StatusUnprocessableEntity
@@ -140,7 +153,7 @@ func statusFor(err error) int {
 		return http.StatusPreconditionRequired
 	case errors.Is(err, ErrTooFewFrames):
 		return http.StatusBadRequest
-	case errors.Is(err, ErrAlreadyMarked), errors.Is(err, ErrNoCheckInYet):
+	case errors.Is(err, ErrNoCheckInYet):
 		return http.StatusConflict
 	case errors.Is(err, ErrOutsideOfficeNet), errors.Is(err, ErrDeviceNotApproved):
 		return http.StatusForbidden
@@ -152,7 +165,10 @@ func statusFor(err error) int {
 }
 
 func messageFor(err error) string {
+	var wrongPerson *ErrWrongPerson
 	switch {
+	case errors.As(err, &wrongPerson):
+		return "Wajah cocok dengan " + wrongPerson.Name + ", bukan akun yang sedang login."
 	case errors.Is(err, ErrNoFaceMatch):
 		return "Wajah tidak dikenali. Coba lagi atau ajukan koreksi manual."
 	case errors.Is(err, ErrLivenessFailed):
@@ -165,8 +181,6 @@ func messageFor(err error) string {
 		return "Verifikasi gerakan gagal. Coba di tempat yang lebih terang."
 	case errors.Is(err, ErrTooFewFrames):
 		return "Verifikasi gerakan butuh beberapa frame."
-	case errors.Is(err, ErrAlreadyMarked):
-		return "Sudah absen untuk sesi ini hari ini."
 	case errors.Is(err, ErrNoCheckInYet):
 		return "Belum ada absen masuk hari ini."
 	case errors.Is(err, ErrNoEmployeeRecord):

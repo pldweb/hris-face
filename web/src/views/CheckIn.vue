@@ -137,20 +137,23 @@ async function captureBurst(count = 4): Promise<Blob[]> {
   return frames
 }
 
-async function runChallenge() {
+async function runChallenge(kind: 'check_in' | 'check_out') {
   submitPhase.value = 'challenge'
-  const kind = mode.value === 'check_out' ? 'check_out' : 'check_in'
   const frames = await captureBurst()
   result.value = await submitChallenge(kind, frames)
 }
 
-async function submitFrame() {
+// Normal flow passes no kind (derived from mode); the "ulangi absen" buttons
+// on the done screen pass one explicitly, since mode is 'done' at that point
+// and can no longer say which session to resubmit.
+async function submitFrame(explicitKind?: 'check_in' | 'check_out') {
+  const kind = explicitKind ?? (mode.value === 'check_out' ? 'check_out' : 'check_in')
   const blob = await captureJpeg()
   if (!blob) return
 
   submitPhase.value = 'submitting'
   try {
-    result.value = await submitAttendance(mode.value === 'check_out' ? 'check_out' : 'check_in', blob)
+    result.value = await submitAttendance(kind, blob)
     submitPhase.value = 'success'
     await loadMe()
     // Return to idle so the next action (check-out) is reachable without a
@@ -166,7 +169,7 @@ async function submitFrame() {
     // Escalate to the movement challenge rather than turning them away.
     if (err instanceof CheckInError && err.code === 'challenge_required') {
       try {
-        await runChallenge()
+        await runChallenge(kind)
         submitPhase.value = 'success'
         await loadMe()
         setTimeout(() => {
@@ -180,7 +183,7 @@ async function submitFrame() {
         submitPhase.value = 'error'
         errorMessage.value =
           challengeErr instanceof CheckInError
-            ? mapErrorMessage(challengeErr.code)
+            ? mapErrorMessage(challengeErr)
             : 'Verifikasi gerakan gagal.'
         setTimeout(() => {
           submitPhase.value = 'idle'
@@ -192,7 +195,7 @@ async function submitFrame() {
 
     submitPhase.value = 'error'
     if (err instanceof CheckInError) {
-      errorMessage.value = mapErrorMessage(err.code)
+      errorMessage.value = mapErrorMessage(err)
     } else {
       errorMessage.value = 'Terjadi kesalahan. Coba lagi.'
     }
@@ -203,14 +206,14 @@ async function submitFrame() {
   }
 }
 
-function mapErrorMessage(code: CheckInError['code']): string {
-  switch (code) {
+function mapErrorMessage(err: CheckInError): string {
+  switch (err.code) {
     case 'liveness':
       return t('checkin.errorLiveness')
     case 'no_match':
       return t('checkin.errorNoMatch')
-    case 'already_marked':
-      return t('checkin.errorAlreadyMarked')
+    case 'wrong_person':
+      return t('checkin.errorWrongPerson', { name: err.matchedName ?? '?' })
     case 'no_check_in_yet':
       return t('checkin.errorNoCheckInYet')
     case 'device_not_approved':
@@ -282,11 +285,29 @@ onUnmounted(() => clearInterval(clockTimer))
           block
           :loading="submitPhase === 'submitting' || submitPhase === 'challenge'"
           :disabled="ring !== 'detected'"
-          @click="submitFrame"
+          @click="submitFrame()"
         >
           {{ actionLabel }}
         </a-button>
-        <p v-else class="all-done">{{ t('checkin.allDone') }}</p>
+        <template v-else>
+          <p class="all-done">{{ t('checkin.allDone') }}</p>
+          <div class="rescan-row">
+            <a-button
+              :loading="submitPhase === 'submitting' || submitPhase === 'challenge'"
+              :disabled="ring !== 'detected'"
+              @click="submitFrame('check_in')"
+            >
+              {{ t('checkin.rescanIn') }}
+            </a-button>
+            <a-button
+              :loading="submitPhase === 'submitting' || submitPhase === 'challenge'"
+              :disabled="ring !== 'detected'"
+              @click="submitFrame('check_out')"
+            >
+              {{ t('checkin.rescanOut') }}
+            </a-button>
+          </div>
+        </template>
       </template>
 
       <div class="page-links">
@@ -413,6 +434,16 @@ onUnmounted(() => clearInterval(clockTimer))
 .all-done {
   color: rgba(0, 0, 0, 0.45);
   margin: 0;
+}
+
+.rescan-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.rescan-row .ant-btn {
+  flex: 1;
 }
 
 .summary-row {
