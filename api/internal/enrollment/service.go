@@ -7,6 +7,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -46,12 +49,17 @@ func (e *RejectedError) Error() string {
 }
 
 type Service struct {
-	pool *pgxpool.Pool
-	face *faceclient.Client
+	pool     *pgxpool.Pool
+	face     *faceclient.Client
+	photoDir string
 }
 
-func NewService(pool *pgxpool.Pool, face *faceclient.Client) *Service {
-	return &Service{pool: pool, face: face}
+// photoDir empty disables saving the reference photo entirely, same opt-in
+// rule as attendance's PHOTO_DIR (docs/PRD.md 8): a face photo is personal
+// data, so a deployment that never set PHOTO_DIR does not start accumulating
+// them just because this feature shipped.
+func NewService(pool *pgxpool.Pool, face *faceclient.Client, photoDir string) *Service {
+	return &Service{pool: pool, face: face, photoDir: photoDir}
 }
 
 // Enroll registers a face for the first time. It refuses when the employee is
@@ -98,10 +106,12 @@ func (s *Service) enroll(ctx context.Context, userID string, photos [][]byte, re
 
 	// Keep each embedding with its measured quality; storing the constant
 	// instead makes face_embeddings.quality_score useless for later triage
-	// ("which photo should this employee re-take?").
+	// ("which photo should this employee re-take?"). jpeg travels alongside
+	// so the highest-quality shot can be saved as the reference photo below.
 	type scored struct {
 		embedding []float32
 		quality   float32
+		jpeg      []byte
 	}
 	embeddings := make([]scored, 0, len(photos))
 	var rejections []PhotoRejection
@@ -123,7 +133,7 @@ func (s *Service) enroll(ctx context.Context, userID string, photos [][]byte, re
 			rejections = append(rejections, PhotoRejection{Index: i, Reason: "wajah terlalu kecil atau gambar kurang jelas"})
 			continue
 		}
-		embeddings = append(embeddings, scored{embedding: analysis.Embedding, quality: analysis.QualityScore})
+		embeddings = append(embeddings, scored{embedding: analysis.Embedding, quality: analysis.QualityScore, jpeg: photo})
 	}
 
 	if len(rejections) > 0 {
@@ -164,11 +174,48 @@ func (s *Service) enroll(ctx context.Context, userID string, photos [][]byte, re
 		}
 	}
 
-	if _, err := tx.Exec(ctx, `UPDATE employees SET status = 'active' WHERE id = $1`, employeeID); err != nil {
+	// Best-quality shot stands in for "what this employee looks like on file" --
+	// save() itself checks photoDir and never fails the enrollment on a disk
+	// error, same as attendance's PhotoStore: the embeddings are what matter
+	// for matching, the photo is a viewing convenience on top.
+	best := embeddings[0]
+	for _, e := range embeddings {
+		if e.quality > best.quality {
+			best = e
+		}
+	}
+	photoPath := s.savePhoto(employeeID, best.jpeg)
+
+	if _, err := tx.Exec(ctx,
+		`UPDATE employees SET status = 'active', face_photo_path = COALESCE(NULLIF($1, ''), face_photo_path) WHERE id = $2`,
+		photoPath, employeeID); err != nil {
 		return err
 	}
 
 	return tx.Commit(ctx)
+}
+
+// savePhoto writes the reference photo under photoDir/enrollment/, one file
+// per employee (re-enroll overwrites it -- there is only ever one "current"
+// face photo on file, matching how face_embeddings itself only keeps the
+// active set). The "enrollment" subfolder keeps this out of attendance's
+// PhotoStore day-bucket sweep, which only recognizes YYYY-MM-DD directory
+// names and already safely skips anything else.
+func (s *Service) savePhoto(employeeID string, jpeg []byte) string {
+	if s.photoDir == "" || len(jpeg) == 0 {
+		return ""
+	}
+	dir := filepath.Join(s.photoDir, "enrollment")
+	if err := os.MkdirAll(dir, 0o750); err != nil {
+		log.Printf("enrollment photo: mkdir %s: %v", dir, err)
+		return ""
+	}
+	path := filepath.Join(dir, employeeID+".jpg")
+	if err := os.WriteFile(path, jpeg, 0o640); err != nil {
+		log.Printf("enrollment photo: write %s: %v", path, err)
+		return ""
+	}
+	return path
 }
 
 func (s *Service) collidesWithAnotherEmployee(ctx context.Context, employeeID string, embedding []float32) (bool, error) {

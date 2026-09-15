@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons-vue'
+import { DeleteOutlined, EditOutlined, PictureOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import {
   createEmployee,
   createDepartment,
   deactivateEmployee,
+  fetchFacePhotoUrl,
   importEmployeesCsv,
   listDepartments,
   listEmployees,
@@ -65,6 +66,35 @@ const resetPassword = ref(false)
 const newPassword = ref('')
 
 const tempPasswordResult = ref<{ name: string; password: string } | null>(null)
+
+const facePhotoModal = ref(false)
+const facePhotoUrl = ref<string | null>(null)
+const facePhotoName = ref('')
+const facePhotoLoading = ref(false)
+
+async function onViewFacePhoto(record: Employee) {
+  facePhotoModal.value = true
+  facePhotoName.value = record.full_name
+  facePhotoLoading.value = true
+  revokeFacePhotoUrl()
+  try {
+    facePhotoUrl.value = await fetchFacePhotoUrl(record.id)
+  } catch {
+    message.error('Gagal memuat foto')
+    facePhotoModal.value = false
+  } finally {
+    facePhotoLoading.value = false
+  }
+}
+
+function revokeFacePhotoUrl() {
+  if (facePhotoUrl.value) {
+    URL.revokeObjectURL(facePhotoUrl.value)
+    facePhotoUrl.value = null
+  }
+}
+
+onBeforeUnmount(revokeFacePhotoUrl)
 const importResult = ref<ImportResult | null>(null)
 const importing = ref(false)
 
@@ -290,10 +320,30 @@ onMounted(loadAll)
                 Hapus
               </a-button>
             </a-popconfirm>
+            <a-button
+              v-if="record.has_face_photo"
+              type="text"
+              size="small"
+              @click="onViewFacePhoto(record)"
+            >
+              <template #icon><PictureOutlined /></template>
+              Lihat wajah
+            </a-button>
           </a-space>
         </template>
       </template>
     </a-table>
+
+    <a-modal
+      v-model:open="facePhotoModal"
+      :title="`Foto pendaftaran wajah — ${facePhotoName}`"
+      :footer="null"
+      @after-close="revokeFacePhotoUrl"
+    >
+      <a-spin :spinning="facePhotoLoading">
+        <img v-if="facePhotoUrl" :src="facePhotoUrl" alt="Foto wajah" style="width: 100%; border-radius: 8px" />
+      </a-spin>
+    </a-modal>
 
     <a-modal v-model:open="modalOpen" :title="modalTitle" width="620px" :confirm-loading="submitting" @ok="onSubmit">
       <a-form layout="vertical">

@@ -44,7 +44,7 @@ func main() {
 	photoStore := attendance.NewPhotoStore(cfg.PhotoDir, cfg.PhotoRetentionDays)
 	photoStore.StartCleanup()
 	attSvc := attendance.NewService(pool, face, cfg.OfficeIPAllowlist, cfg.Timezone, photoStore)
-	enrollSvc := enrollment.NewService(pool, face)
+	enrollSvc := enrollment.NewService(pool, face, cfg.PhotoDir)
 	mailer := notify.New(cfg.SMTP)
 	reportSvc := report.NewService(pool, cfg.Timezone)
 	correctionSvc := correction.NewService(pool, mailer)

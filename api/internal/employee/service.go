@@ -50,6 +50,7 @@ type Employee struct {
 	ManagerID        string `json:"manager_id,omitempty"`
 	AnnualLeaveQuota int    `json:"annual_leave_quota"`
 	Status           string `json:"status"`
+	HasFacePhoto     bool   `json:"has_face_photo"`
 	// AllowRemote lets attendance pass the office-network check from anywhere
 	// (internal/attendance/service.go). Defaults to false: a deployment with no
 	// office IP allowlist configured must turn this on per employee, or every
@@ -104,7 +105,7 @@ func (s *Service) List(ctx context.Context) ([]Employee, error) {
 		SELECT e.id, e.nik, e.full_name, u.email,
 		       COALESCE(e.department_id::text, ''), COALESCE(e.location_id::text, ''),
 		       COALESCE(e.schedule_id::text, ''), COALESCE(e.manager_id::text, ''),
-		       e.annual_leave_quota, e.status, e.allow_remote
+		       e.annual_leave_quota, e.status, e.allow_remote, e.face_photo_path IS NOT NULL
 		FROM employees e
 		JOIN users u ON u.id = e.user_id
 		ORDER BY e.full_name`)
@@ -117,7 +118,7 @@ func (s *Service) List(ctx context.Context) ([]Employee, error) {
 	for rows.Next() {
 		var e Employee
 		if err := rows.Scan(&e.ID, &e.NIK, &e.FullName, &e.Email, &e.DepartmentID, &e.LocationID,
-			&e.ScheduleID, &e.ManagerID, &e.AnnualLeaveQuota, &e.Status, &e.AllowRemote); err != nil {
+			&e.ScheduleID, &e.ManagerID, &e.AnnualLeaveQuota, &e.Status, &e.AllowRemote, &e.HasFacePhoto); err != nil {
 			return nil, err
 		}
 		out = append(out, e)
@@ -286,6 +287,24 @@ func (s *Service) Update(ctx context.Context, employeeID string, in UpdateEmploy
 	}
 
 	return tx.Commit(ctx)
+}
+
+// FacePhotoPath returns the stored path of the employee's enrollment reference
+// photo, or "" if none was ever saved (PHOTO_DIR unset at enroll time, or
+// enrollment predates this feature).
+func (s *Service) FacePhotoPath(ctx context.Context, employeeID string) (string, error) {
+	var path *string
+	err := s.pool.QueryRow(ctx, `SELECT face_photo_path FROM employees WHERE id = $1`, employeeID).Scan(&path)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", ErrEmployeeNotFound
+	}
+	if err != nil {
+		return "", err
+	}
+	if path == nil {
+		return "", nil
+	}
+	return *path, nil
 }
 
 // Deactivate soft-deletes: sets status to inactive rather than removing the

@@ -13,6 +13,7 @@ func RegisterRoutes(r gin.IRoutes, svc *Service) {
 	r.GET("/me/profile", profileHandler(svc))
 	r.PATCH("/me/profile", updateProfileHandler(svc))
 	r.GET("/admin/employees", middleware.RequireRole("hr", "superadmin"), listHandler(svc))
+	r.GET("/admin/employees/:id/face-photo", middleware.RequireRole("hr", "superadmin"), facePhotoHandler(svc))
 	r.POST("/admin/employees", middleware.RequireRole("hr", "superadmin"), createHandler(svc))
 	r.PUT("/admin/employees/:id", middleware.RequireRole("hr", "superadmin"), updateHandler(svc))
 	r.DELETE("/admin/employees/:id", middleware.RequireRole("hr", "superadmin"), deactivateHandler(svc))
@@ -37,6 +38,29 @@ func meHandler(svc *Service) gin.HandlerFunc {
 			return
 		}
 		c.JSON(http.StatusOK, me)
+	}
+}
+
+// facePhotoHandler serves the raw JPEG saved at enrollment. Fetched via axios
+// (not a plain <img src>), because it needs the same Bearer auth as every
+// other admin endpoint -- an <img> tag cannot attach that header.
+func facePhotoHandler(svc *Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		path, err := svc.FacePhotoPath(c.Request.Context(), c.Param("id"))
+		if errors.Is(err, ErrEmployeeNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "gagal mengambil foto"})
+			return
+		}
+		if path == "" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "belum ada foto pendaftaran wajah"})
+			return
+		}
+		c.Header("Cache-Control", "private, max-age=3600")
+		c.File(path)
 	}
 }
 

@@ -14,6 +14,7 @@ export interface Employee {
   annual_leave_quota: number
   status: EmployeeStatus
   allow_remote: boolean
+  has_face_photo: boolean
 }
 
 export interface Department {
@@ -145,4 +146,13 @@ export async function importEmployeesCsv(file: File): Promise<ImportResult> {
   form.append('file', file)
   const { data } = await apiClient.post('/admin/employees/import', form)
   return data
+}
+
+// A plain <img src="/api/v1/...">  can't carry the Bearer token every other
+// admin call needs, so this fetches the bytes through the authenticated
+// client and hands back a blob: URL the caller must revoke when done with it
+// (URL.revokeObjectURL) to avoid leaking memory across repeated opens.
+export async function fetchFacePhotoUrl(employeeId: string): Promise<string> {
+  const { data } = await apiClient.get(`/admin/employees/${employeeId}/face-photo`, { responseType: 'blob' })
+  return URL.createObjectURL(data as Blob)
 }
